@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>North Card Builder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+:root {
+  --bg: #eef3f6; --surface: #ffffff; --surface-2: #e3ebf0; --ink: #0d1b2e; --ink-2: #4a5b70;
+  --line: #cfdbe3; --accent: #0f9e8a; --accent-ink: #ffffff; --accent-soft: #d5f1ec;
+  --studio: #0d1b2e; --studio-ink: #e9f2f6; --studio-ink-2: #93a7bb;
+  --bor-night-a: #030918; --bor-night-b: #0a1d3a; --bor-green: #2ef2a0; --bor-teal: #17c3c9; --bor-violet: #9b6bff;
+  --f-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", sans-serif;
+  --f-body: "Figtree", "Helvetica Neue", Arial, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  --r: 16px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #08121f; --surface: #102036; --surface-2: #172b45; --ink: #e9f2f6; --ink-2: #93a7bb;
+    --line: #23395a; --accent: #3fd2b4; --accent-ink: #062018; --accent-soft: #123d3f; --studio: #050c16;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #08121f; --surface: #102036; --surface-2: #172b45; --ink: #e9f2f6; --ink-2: #93a7bb;
+  --line: #23395a; --accent: #3fd2b4; --accent-ink: #062018; --accent-soft: #123d3f; --studio: #050c16;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+h1, h2, h3 { font-family: var(--f-display); letter-spacing: -0.02em; margin: 0; text-wrap: balance; }
+p { margin: 0; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.wrap { max-width: 1040px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+
+.brand { display: inline-flex; align-items: center; gap: 8px; font-family: var(--f-display); font-weight: 800; font-size: 20px; letter-spacing: -0.03em; }
+.brand svg { width: 26px; height: 26px; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 99px; padding: 15px 24px; font-weight: 700; font-size: 16px; background: var(--accent); color: var(--accent-ink); text-decoration: none; transition: transform .15s; }
+.btn:active { transform: scale(.98); }
+
+/* Hero */
+.hero { background: var(--studio); color: var(--studio-ink); position: relative; overflow: hidden; }
+.hero::before { content: ""; position: absolute; inset: -30% -15% auto auto; width: 620px; height: 620px; border-radius: 50%; background: radial-gradient(circle, color-mix(in srgb, #39c9a0 30%, transparent), transparent 65%); pointer-events: none; }
+.hero .wrap { position: relative; padding-top: 20px; padding-bottom: 56px; }
+.hero-grid { display: grid; gap: 40px; align-items: center; margin-top: 40px; }
+@media (min-width: 860px) { .hero-grid { grid-template-columns: 1.1fr .9fr; } }
+.eyebrow { font-size: 12px; text-transform: uppercase; letter-spacing: .12em; font-weight: 700; color: var(--studio-ink-2); }
+.hero h1 { font-size: clamp(36px, 7vw, 60px); line-height: 1.02; font-weight: 800; margin: 10px 0 16px; }
+.hero p { color: var(--studio-ink-2); font-size: 18px; max-width: 44ch; }
+.hero .btn { margin-top: 28px; }
+.hero .btn.dark-accent { --accent: #3fd2b4; --accent-ink: #062018; }
+
+/* Card */
+.card { position: relative; width: min(400px, 100%); justify-self: center; aspect-ratio: 1.586; border-radius: 18px; overflow: hidden; color: #f4f8fb; container-type: inline-size; transform: rotate(-4deg);
+  background: radial-gradient(110% 75% at 18% 0%, color-mix(in srgb, var(--bor-green) 70%, transparent), transparent 60%), radial-gradient(80% 70% at 88% 8%, color-mix(in srgb, var(--bor-violet) 75%, transparent), transparent 62%), radial-gradient(70% 50% at 55% 30%, color-mix(in srgb, var(--bor-teal) 45%, transparent), transparent 70%), linear-gradient(170deg, var(--bor-night-b), var(--bor-night-a) 75%);
+  box-shadow: 0 30px 60px -20px rgba(0,0,0,.7), inset 0 0 0 1px rgba(255,255,255,.12); }
+.card::before { content: ""; position: absolute; inset: -30%; background: linear-gradient(100deg, transparent 28%, color-mix(in srgb, var(--bor-green) 50%, transparent) 40%, transparent 50%, color-mix(in srgb, var(--bor-violet) 40%, transparent) 60%, transparent 72%); filter: blur(14px); animation: aurora 9s ease-in-out infinite alternate; }
+@keyframes aurora { from { transform: translateX(-14%) skewX(-14deg); } to { transform: translateX(14%) skewX(10deg); } }
+.card .pat { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .34; }
+.card .in { position: absolute; inset: 0; padding: 7cqw; display: flex; flex-direction: column; justify-content: space-between; }
+.card .r1, .card .r3 { display: flex; justify-content: space-between; align-items: flex-start; }
+.card .r3 { align-items: flex-end; }
+.card .mark { display: flex; align-items: center; gap: 2cqw; font-family: var(--f-display); font-weight: 800; font-size: 6.5cqw; }
+.card .mark svg { width: 7.5cqw; height: 7.5cqw; }
+.card .tier { font-size: 3.2cqw; text-transform: uppercase; letter-spacing: .14em; font-weight: 700; opacity: .85; }
+.card .chip { width: 12cqw; height: 9cqw; border-radius: 1.8cqw; background: linear-gradient(135deg, #e8cf8a, #b8934a); }
+.card .holder { font-family: var(--f-mono); font-size: 4cqw; letter-spacing: .08em; }
+.card .num { font-family: var(--f-mono); font-size: 4cqw; opacity: .85; display: block; }
+
+/* Sections */
+section.block { padding-block: 56px 8px; }
+.label { font-size: 12px; text-transform: uppercase; letter-spacing: .12em; font-weight: 700; color: var(--accent); }
+section.block h2 { font-size: clamp(26px, 4.5vw, 36px); line-height: 1.1; margin: 8px 0 20px; }
+.problem { display: grid; gap: 20px; }
+@media (min-width: 860px) { .problem { grid-template-columns: 1fr 1fr; gap: 40px; } }
+.problem p { font-size: 18px; color: var(--ink-2); max-width: 52ch; }
+.problem p strong { color: var(--ink); }
+
+.who { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.tile { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 20px; display: grid; gap: 8px; align-content: start; }
+.tile .ico { width: 44px; height: 44px; border-radius: 12px; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; }
+.tile .ico svg { width: 22px; height: 22px; }
+.tile h3 { font-size: 19px; margin-top: 6px; }
+.tile p { color: var(--ink-2); font-size: 15px; }
+
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); counter-reset: s; }
+.steps li { counter-increment: s; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 20px; display: grid; gap: 6px; align-content: start; }
+.steps li::before { content: counter(s); width: 30px; height: 30px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; font-weight: 800; font-size: 14px; margin-bottom: 6px; }
+.steps b { font-family: var(--f-display); font-size: 18px; }
+.steps span { color: var(--ink-2); font-size: 15px; }
+
+/* Try it */
+.try { margin-block: 56px; background: var(--studio); color: var(--studio-ink); border-radius: 24px; padding: 32px; display: grid; gap: 28px; align-items: center; }
+@media (min-width: 720px) { .try { grid-template-columns: 1fr auto; padding: 40px 48px; } }
+.try h2 { font-size: clamp(26px, 4.5vw, 36px); line-height: 1.1; }
+.try p { color: var(--studio-ink-2); margin-top: 10px; max-width: 42ch; }
+.try .btn { margin-top: 24px; --accent: #3fd2b4; --accent-ink: #062018; }
+.qr { justify-self: center; display: grid; gap: 10px; justify-items: center; }
+.qr svg { width: 180px; height: 180px; border-radius: 14px; display: block; }
+.qr small { color: var(--studio-ink-2); font-size: 13px; }
+
+footer { border-top: 1px solid var(--line); color: var(--ink-2); font-size: 13px; padding-block: 24px 40px; text-align: center; }
+footer a { color: inherit; }
+@media (prefers-reduced-motion: reduce) { *, *::before { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="brand"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="14" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 5 L20 16 L16 14 L12 16 Z" fill="#39c9a0"/><path d="M16 27 L12 16 L16 18 L20 16 Z" fill="currentColor" opacity=".45"/></svg>North</span>
+    <div class="hero-grid">
+      <div>
+        <span class="eyebrow">North Card Builder</span>
+        <h1>A credit card built around how you live.</h1>
+        <p>Check if you're likely to be accepted, pick the three perks you'll actually use, and design how your card looks. It all takes about two minutes.</p>
+        <a class="btn dark-accent" href="index.html">Try the app →</a>
+      </div>
+      <div class="card" role="img" aria-label="Example North card in the Aurora colour">
+        <svg class="pat" viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><g fill="currentColor"><path opacity=".45" d="M0 66 L14 50 L24 58 L42 30 L52 44 L60 38 L78 56 L96 34 L108 46 L122 26 L138 48 L150 40 L160 46 V100 H0Z"/><path opacity=".7" d="M0 80 L20 62 L36 72 L58 52 L76 70 L94 58 L116 74 L136 60 L160 70 V100 H0Z"/><path d="M0 92 L24 80 L48 88 L72 76 L100 90 L128 80 L160 90 V100 H0Z"/></g></svg>
+        <div class="in">
+          <div class="r1"><span class="mark"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="14" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M16 5 L20 16 L16 14 L12 16 Z" fill="currentColor"/><path d="M16 27 L12 16 L16 18 L20 16 Z" fill="currentColor" opacity=".45"/></svg>North</span><span class="tier">Voyager</span></div>
+          <span class="chip"></span>
+          <div class="r3"><div><span class="num">•••• 4821</span><span class="holder">ALEX MORGAN</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="block" aria-labelledby="problem">
+    <span class="label">The problem</span>
+    <h2 id="problem">Credit cards come as fixed packages.</h2>
+    <div class="problem">
+      <p>Most cards bundle features you didn't choose, look the same as everyone else's, and <strong>you often don't know if you'll be accepted until you've applied.</strong></p>
+      <p>North tests a different idea: check first, then build a card around your own priorities, with <strong>the value of every perk shown in pounds</strong> before you commit.</p>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="who">
+    <span class="label">Who it's for</span>
+    <h2 id="who">Four kinds of customer, one builder.</h2>
+    <div class="who">
+      <div class="tile"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V14M10 20V9M16 20V12M22 20V4"/></svg></span><h3>Credit builders</h3><p>Getting a first card or making a fresh start.</p></div>
+      <div class="tile"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18l-2 12H5z"/><path d="M8 6a4 4 0 0 1 8 0"/></svg></span><h3>Everyday spenders</h3><p>Want money back on groceries, bills and the usual.</p></div>
+      <div class="tile"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 16l20-6-3-3-7 2-5-5-2 1 3 6-4 1-2-2-1 1z"/><path d="M3 21h18"/></svg></span><h3>Frequent travellers</h3><p>Want miles, lounges and cheaper spending abroad.</p></div>
+      <div class="tile"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span><h3>Cost spreaders</h3><p>Have a big purchase coming up or a balance to move.</p></div>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="what">
+    <span class="label">What it does</span>
+    <h2 id="what">From questions to a card in your wallet.</h2>
+    <ol class="steps">
+      <li><b>Check eligibility</b><span>Six quick questions and a simulated soft search show your likely credit limit.</span></li>
+      <li><b>Pick 3 perks</b><span>Cashback, travel, 0% offers or credit building, with their value per year after fees.</span></li>
+      <li><b>Design it</b><span>Colour, pattern, material, finish, orientation and your name, with a live preview.</span></li>
+      <li><b>Review and apply</b><span>Everything in one place: limit, fees and representative APR.</span></li>
+      <li><b>Use it now</b><span>Your finished card drops straight into your phone wallet.</span></li>
+    </ol>
+  </section>
+
+  <section class="try" aria-labelledby="try">
+    <div>
+      <h2 id="try">Build your own card.</h2>
+      <p>Open the prototype on this device, or scan the code to try it on your phone.</p>
+      <a class="btn" href="index.html">Open the app →</a>
+    </div>
+    <div class="qr">
+      <span role="img" aria-label="QR code that opens the North Card Builder app"><svg aria-hidden="true" viewBox="-4 -4 41 41" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges"><rect x="-4" y="-4" width="41" height="41" fill="#fff"/><path fill="#0d1b2e" d="M0 0h1v1h-1zM1 0h1v1h-1zM2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM5 0h1v1h-1zM6 0h1v1h-1zM9 0h1v1h-1zM12 0h1v1h-1zM13 0h1v1h-1zM14 0h1v1h-1zM16 0h1v1h-1zM18 0h1v1h-1zM19 0h1v1h-1zM20 0h1v1h-1zM21 0h1v1h-1zM23 0h1v1h-1zM24 0h1v1h-1zM26 0h1v1h-1zM27 0h1v1h-1zM28 0h1v1h-1zM29 0h1v1h-1zM30 0h1v1h-1zM31 0h1v1h-1zM32 0h1v1h-1zM0 1h1v1h-1zM6 1h1v1h-1zM9 1h1v1h-1zM13 1h1v1h-1zM14 1h1v1h-1zM15 1h1v1h-1zM17 1h1v1h-1zM18 1h1v1h-1zM20 1h1v1h-1zM21 1h1v1h-1zM22 1h1v1h-1zM26 1h1v1h-1zM32 1h1v1h-1zM0 2h1v1h-1zM2 2h1v1h-1zM3 2h1v1h-1zM4 2h1v1h-1zM6 2h1v1h-1zM8 2h1v1h-1zM9 2h1v1h-1zM11 2h1v1h-1zM12 2h1v1h-1zM13 2h1v1h-1zM15 2h1v1h-1zM18 2h1v1h-1zM21 2h1v1h-1zM23 2h1v1h-1zM24 2h1v1h-1zM26 2h1v1h-1zM28 2h1v1h-1zM29 2h1v1h-1zM30 2h1v1h-1zM32 2h1v1h-1zM0 3h1v1h-1zM2 3h1v1h-1zM3 3h1v1h-1zM4 3h1v1h-1zM6 3h1v1h-1zM8 3h1v1h-1zM10 3h1v1h-1zM11 3h1v1h-1zM12 3h1v1h-1zM14 3h1v1h-1zM16 3h1v1h-1zM17 3h1v1h-1zM18 3h1v1h-1zM20 3h1v1h-1zM23 3h1v1h-1zM24 3h1v1h-1zM26 3h1v1h-1zM28 3h1v1h-1zM29 3h1v1h-1zM30 3h1v1h-1zM32 3h1v1h-1zM0 4h1v1h-1zM2 4h1v1h-1zM3 4h1v1h-1zM4 4h1v1h-1zM6 4h1v1h-1zM8 4h1v1h-1zM9 4h1v1h-1zM12 4h1v1h-1zM15 4h1v1h-1zM17 4h1v1h-1zM18 4h1v1h-1zM19 4h1v1h-1zM20 4h1v1h-1zM23 4h1v1h-1zM26 4h1v1h-1zM28 4h1v1h-1zM29 4h1v1h-1zM30 4h1v1h-1zM32 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM8 5h1v1h-1zM9 5h1v1h-1zM11 5h1v1h-1zM14 5h1v1h-1zM15 5h1v1h-1zM16 5h1v1h-1zM20 5h1v1h-1zM21 5h1v1h-1zM22 5h1v1h-1zM24 5h1v1h-1zM26 5h1v1h-1zM32 5h1v1h-1zM0 6h1v1h-1zM1 6h1v1h-1zM2 6h1v1h-1zM3 6h1v1h-1zM4 6h1v1h-1zM5 6h1v1h-1zM6 6h1v1h-1zM8 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM14 6h1v1h-1zM16 6h1v1h-1zM18 6h1v1h-1zM20 6h1v1h-1zM22 6h1v1h-1zM24 6h1v1h-1zM26 6h1v1h-1zM27 6h1v1h-1zM28 6h1v1h-1zM29 6h1v1h-1zM30 6h1v1h-1zM31 6h1v1h-1zM32 6h1v1h-1zM8 7h1v1h-1zM12 7h1v1h-1zM14 7h1v1h-1zM15 7h1v1h-1zM18 7h1v1h-1zM20 7h1v1h-1zM21 7h1v1h-1zM22 7h1v1h-1zM23 7h1v1h-1zM24 7h1v1h-1zM0 8h1v1h-1zM2 8h1v1h-1zM3 8h1v1h-1zM4 8h1v1h-1zM5 8h1v1h-1zM6 8h1v1h-1zM13 8h1v1h-1zM14 8h1v1h-1zM15 8h1v1h-1zM17 8h1v1h-1zM24 8h1v1h-1zM26 8h1v1h-1zM27 8h1v1h-1zM28 8h1v1h-1zM29 8h1v1h-1zM30 8h1v1h-1zM0 9h1v1h-1zM1 9h1v1h-1zM2 9h1v1h-1zM3 9h1v1h-1zM9 9h1v1h-1zM10 9h1v1h-1zM16 9h1v1h-1zM17 9h1v1h-1zM18 9h1v1h-1zM19 9h1v1h-1zM20 9h1v1h-1zM22 9h1v1h-1zM23 9h1v1h-1zM26 9h1v1h-1zM27 9h1v1h-1zM29 9h1v1h-1zM30 9h1v1h-1zM32 9h1v1h-1zM1 10h1v1h-1zM2 10h1v1h-1zM3 10h1v1h-1zM5 10h1v1h-1zM6 10h1v1h-1zM7 10h1v1h-1zM10 10h1v1h-1zM11 10h1v1h-1zM12 10h1v1h-1zM15 10h1v1h-1zM17 10h1v1h-1zM21 10h1v1h-1zM22 10h1v1h-1zM24 10h1v1h-1zM25 10h1v1h-1zM28 10h1v1h-1zM30 10h1v1h-1zM31 10h1v1h-1zM0 11h1v1h-1zM1 11h1v1h-1zM4 11h1v1h-1zM9 11h1v1h-1zM12 11h1v1h-1zM14 11h1v1h-1zM15 11h1v1h-1zM16 11h1v1h-1zM20 11h1v1h-1zM21 11h1v1h-1zM22 11h1v1h-1zM23 11h1v1h-1zM24 11h1v1h-1zM28 11h1v1h-1zM29 11h1v1h-1zM30 11h1v1h-1zM31 11h1v1h-1zM6 12h1v1h-1zM7 12h1v1h-1zM8 12h1v1h-1zM10 12h1v1h-1zM11 12h1v1h-1zM12 12h1v1h-1zM15 12h1v1h-1zM18 12h1v1h-1zM22 12h1v1h-1zM25 12h1v1h-1zM28 12h1v1h-1zM29 12h1v1h-1zM32 12h1v1h-1zM0 13h1v1h-1zM2 13h1v1h-1zM3 13h1v1h-1zM4 13h1v1h-1zM7 13h1v1h-1zM8 13h1v1h-1zM9 13h1v1h-1zM11 13h1v1h-1zM12 13h1v1h-1zM14 13h1v1h-1zM15 13h1v1h-1zM16 13h1v1h-1zM17 13h1v1h-1zM18 13h1v1h-1zM19 13h1v1h-1zM20 13h1v1h-1zM23 13h1v1h-1zM26 13h1v1h-1zM29 13h1v1h-1zM31 13h1v1h-1zM32 13h1v1h-1zM2 14h1v1h-1zM3 14h1v1h-1zM6 14h1v1h-1zM10 14h1v1h-1zM11 14h1v1h-1zM14 14h1v1h-1zM18 14h1v1h-1zM21 14h1v1h-1zM25 14h1v1h-1zM26 14h1v1h-1zM27 14h1v1h-1zM28 14h1v1h-1zM29 14h1v1h-1zM31 14h1v1h-1zM3 15h1v1h-1zM7 15h1v1h-1zM8 15h1v1h-1zM11 15h1v1h-1zM12 15h1v1h-1zM13 15h1v1h-1zM16 15h1v1h-1zM20 15h1v1h-1zM21 15h1v1h-1zM24 15h1v1h-1zM25 15h1v1h-1zM26 15h1v1h-1zM27 15h1v1h-1zM30 15h1v1h-1zM0 16h1v1h-1zM2 16h1v1h-1zM3 16h1v1h-1zM4 16h1v1h-1zM6 16h1v1h-1zM10 16h1v1h-1zM12 16h1v1h-1zM16 16h1v1h-1zM17 16h1v1h-1zM20 16h1v1h-1zM25 16h1v1h-1zM27 16h1v1h-1zM28 16h1v1h-1zM32 16h1v1h-1zM0 17h1v1h-1zM4 17h1v1h-1zM9 17h1v1h-1zM12 17h1v1h-1zM13 17h1v1h-1zM16 17h1v1h-1zM17 17h1v1h-1zM18 17h1v1h-1zM19 17h1v1h-1zM20 17h1v1h-1zM21 17h1v1h-1zM22 17h1v1h-1zM23 17h1v1h-1zM26 17h1v1h-1zM27 17h1v1h-1zM29 17h1v1h-1zM30 17h1v1h-1zM32 17h1v1h-1zM3 18h1v1h-1zM5 18h1v1h-1zM6 18h1v1h-1zM7 18h1v1h-1zM8 18h1v1h-1zM9 18h1v1h-1zM10 18h1v1h-1zM11 18h1v1h-1zM15 18h1v1h-1zM16 18h1v1h-1zM17 18h1v1h-1zM20 18h1v1h-1zM26 18h1v1h-1zM27 18h1v1h-1zM28 18h1v1h-1zM30 18h1v1h-1zM31 18h1v1h-1zM1 19h1v1h-1zM2 19h1v1h-1zM3 19h1v1h-1zM4 19h1v1h-1zM5 19h1v1h-1zM7 19h1v1h-1zM8 19h1v1h-1zM9 19h1v1h-1zM10 19h1v1h-1zM11 19h1v1h-1zM14 19h1v1h-1zM15 19h1v1h-1zM17 19h1v1h-1zM18 19h1v1h-1zM21 19h1v1h-1zM24 19h1v1h-1zM27 19h1v1h-1zM28 19h1v1h-1zM29 19h1v1h-1zM30 19h1v1h-1zM32 19h1v1h-1zM0 20h1v1h-1zM2 20h1v1h-1zM6 20h1v1h-1zM7 20h1v1h-1zM8 20h1v1h-1zM9 20h1v1h-1zM10 20h1v1h-1zM11 20h1v1h-1zM12 20h1v1h-1zM13 20h1v1h-1zM16 20h1v1h-1zM22 20h1v1h-1zM24 20h1v1h-1zM28 20h1v1h-1zM29 20h1v1h-1zM31 20h1v1h-1zM32 20h1v1h-1zM0 21h1v1h-1zM1 21h1v1h-1zM2 21h1v1h-1zM3 21h1v1h-1zM4 21h1v1h-1zM5 21h1v1h-1zM9 21h1v1h-1zM11 21h1v1h-1zM12 21h1v1h-1zM14 21h1v1h-1zM15 21h1v1h-1zM18 21h1v1h-1zM19 21h1v1h-1zM20 21h1v1h-1zM21 21h1v1h-1zM22 21h1v1h-1zM23 21h1v1h-1zM26 21h1v1h-1zM29 21h1v1h-1zM32 21h1v1h-1zM0 22h1v1h-1zM3 22h1v1h-1zM4 22h1v1h-1zM6 22h1v1h-1zM7 22h1v1h-1zM8 22h1v1h-1zM13 22h1v1h-1zM15 22h1v1h-1zM16 22h1v1h-1zM22 22h1v1h-1zM28 22h1v1h-1zM29 22h1v1h-1zM31 22h1v1h-1zM0 23h1v1h-1zM3 23h1v1h-1zM4 23h1v1h-1zM7 23h1v1h-1zM9 23h1v1h-1zM10 23h1v1h-1zM11 23h1v1h-1zM12 23h1v1h-1zM13 23h1v1h-1zM14 23h1v1h-1zM15 23h1v1h-1zM20 23h1v1h-1zM21 23h1v1h-1zM23 23h1v1h-1zM24 23h1v1h-1zM25 23h1v1h-1zM26 23h1v1h-1zM28 23h1v1h-1zM29 23h1v1h-1zM30 23h1v1h-1zM32 23h1v1h-1zM0 24h1v1h-1zM1 24h1v1h-1zM2 24h1v1h-1zM3 24h1v1h-1zM4 24h1v1h-1zM5 24h1v1h-1zM6 24h1v1h-1zM7 24h1v1h-1zM10 24h1v1h-1zM11 24h1v1h-1zM13 24h1v1h-1zM14 24h1v1h-1zM15 24h1v1h-1zM17 24h1v1h-1zM18 24h1v1h-1zM19 24h1v1h-1zM24 24h1v1h-1zM25 24h1v1h-1zM26 24h1v1h-1zM27 24h1v1h-1zM28 24h1v1h-1zM31 24h1v1h-1zM8 25h1v1h-1zM9 25h1v1h-1zM11 25h1v1h-1zM12 25h1v1h-1zM14 25h1v1h-1zM16 25h1v1h-1zM18 25h1v1h-1zM19 25h1v1h-1zM20 25h1v1h-1zM21 25h1v1h-1zM24 25h1v1h-1zM28 25h1v1h-1zM30 25h1v1h-1zM32 25h1v1h-1zM0 26h1v1h-1zM1 26h1v1h-1zM2 26h1v1h-1zM3 26h1v1h-1zM4 26h1v1h-1zM5 26h1v1h-1zM6 26h1v1h-1zM9 26h1v1h-1zM11 26h1v1h-1zM12 26h1v1h-1zM14 26h1v1h-1zM15 26h1v1h-1zM16 26h1v1h-1zM18 26h1v1h-1zM21 26h1v1h-1zM22 26h1v1h-1zM23 26h1v1h-1zM24 26h1v1h-1zM26 26h1v1h-1zM28 26h1v1h-1zM30 26h1v1h-1zM0 27h1v1h-1zM6 27h1v1h-1zM8 27h1v1h-1zM10 27h1v1h-1zM12 27h1v1h-1zM13 27h1v1h-1zM16 27h1v1h-1zM19 27h1v1h-1zM20 27h1v1h-1zM21 27h1v1h-1zM22 27h1v1h-1zM23 27h1v1h-1zM24 27h1v1h-1zM28 27h1v1h-1zM29 27h1v1h-1zM30 27h1v1h-1zM32 27h1v1h-1zM0 28h1v1h-1zM2 28h1v1h-1zM3 28h1v1h-1zM4 28h1v1h-1zM6 28h1v1h-1zM8 28h1v1h-1zM9 28h1v1h-1zM10 28h1v1h-1zM11 28h1v1h-1zM15 28h1v1h-1zM18 28h1v1h-1zM19 28h1v1h-1zM22 28h1v1h-1zM24 28h1v1h-1zM25 28h1v1h-1zM26 28h1v1h-1zM27 28h1v1h-1zM28 28h1v1h-1zM29 28h1v1h-1zM0 29h1v1h-1zM2 29h1v1h-1zM3 29h1v1h-1zM4 29h1v1h-1zM6 29h1v1h-1zM8 29h1v1h-1zM9 29h1v1h-1zM14 29h1v1h-1zM15 29h1v1h-1zM16 29h1v1h-1zM17 29h1v1h-1zM19 29h1v1h-1zM20 29h1v1h-1zM24 29h1v1h-1zM25 29h1v1h-1zM28 29h1v1h-1zM29 29h1v1h-1zM31 29h1v1h-1zM32 29h1v1h-1zM0 30h1v1h-1zM2 30h1v1h-1zM3 30h1v1h-1zM4 30h1v1h-1zM6 30h1v1h-1zM8 30h1v1h-1zM9 30h1v1h-1zM10 30h1v1h-1zM11 30h1v1h-1zM12 30h1v1h-1zM13 30h1v1h-1zM17 30h1v1h-1zM20 30h1v1h-1zM21 30h1v1h-1zM22 30h1v1h-1zM23 30h1v1h-1zM26 30h1v1h-1zM27 30h1v1h-1zM0 31h1v1h-1zM6 31h1v1h-1zM9 31h1v1h-1zM10 31h1v1h-1zM11 31h1v1h-1zM14 31h1v1h-1zM16 31h1v1h-1zM18 31h1v1h-1zM21 31h1v1h-1zM22 31h1v1h-1zM25 31h1v1h-1zM26 31h1v1h-1zM28 31h1v1h-1zM29 31h1v1h-1zM30 31h1v1h-1zM0 32h1v1h-1zM1 32h1v1h-1zM2 32h1v1h-1zM3 32h1v1h-1zM4 32h1v1h-1zM5 32h1v1h-1zM6 32h1v1h-1zM8 32h1v1h-1zM9 32h1v1h-1zM14 32h1v1h-1zM17 32h1v1h-1zM19 32h1v1h-1zM22 32h1v1h-1zM23 32h1v1h-1zM24 32h1v1h-1zM25 32h1v1h-1zM27 32h1v1h-1zM31 32h1v1h-1z"/></svg></span>
+      <small>Scan to open on your phone</small>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap">North is a fictional bank. This is a hackathon prototype and every rate, limit, fee and perk value is illustrative. <a href="prd.html">Read the full PRD</a></footer>
+</body>
+</html>
