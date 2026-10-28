@@ -33,6 +33,7 @@
   --c-ember-a: #c2453a; --c-ember-b: #f08a5d;
   --c-frost-a: #dfe7ee; --c-frost-b: #b8c8d6;
   --c-obsidian-a: #111317; --c-obsidian-b: #2c2f36;
+  --c-bor-night-a: #030918; --c-bor-night-b: #0a1d3a; --c-bor-green: #2ef2a0; --c-bor-teal: #17c3c9; --c-bor-violet: #9b6bff;
   --card-light-ink: #f4f8fb;
   --card-dark-ink: #10233b;
 
@@ -75,6 +76,9 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .studio-stage { display: grid; place-items: center; position: relative; flex: 1; }
 .studio-stage .card { width: min(420px, 80%); }
 .studio-stage .card.vertical { width: min(250px, 50%); }
+/* During step 1 the desktop panel holds an empty outline, so the card's first real appearance is saved for later */
+.studio.pre-card .studio-stage .card { display: none; }
+.studio.pre-card .studio-stage::after { content: ""; width: min(420px, 80%); aspect-ratio: 1.586; border: 1.5px dashed color-mix(in srgb, var(--studio-ink) 22%, transparent); border-radius: 16px; }
 .studio-foot { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; position: relative; }
 .stat .k { font-size: 11px; text-transform: uppercase; letter-spacing: .1em; color: var(--studio-ink-2); }
 .stat .v { font-family: var(--f-display); font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
@@ -111,6 +115,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .btn:active { transform: scale(.98); }
 .btn:disabled { opacity: .4; cursor: not-allowed; }
 .btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+.btn.small { padding: 8px 14px; font-size: 14px; }
 .fine { font-size: 12px; color: var(--ink-2); text-align: center; }
 
 /* Landing */
@@ -134,12 +139,18 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .opt[aria-pressed="true"] .radio::after { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--accent-ink); }
 
 /* Perks */
-.slots { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; }
+.rec-box { background: var(--surface); border: 1.5px solid var(--accent); border-radius: var(--r); display: grid; }
+.rec-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; padding: 14px; }
+.rec-top .slot-dots { gap: 4px; flex-shrink: 0; }
+.rec-top .slot-dots i { width: 24px; height: 24px; font-size: 11px; }
+.rec-top b { display: block; font-family: var(--f-display); font-size: 18px; }
+.rec-top small { display: block; color: var(--ink-2); font-size: 13.5px; max-width: 34ch; }
+.rec-apr { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; padding: 10px 14px; border-top: 1px solid var(--line); background: color-mix(in srgb, var(--accent-soft) 45%, var(--surface)); border-radius: 0 0 calc(var(--r) - 1.5px) calc(var(--r) - 1.5px); font-size: 13.5px; }
+.rec-apr span { color: var(--ink-2); font-weight: 600; }
+.rec-apr b { font-variant-numeric: tabular-nums; }
 .slot-dots { display: flex; gap: 6px; }
 .slot-dots i { width: 30px; height: 30px; border-radius: 50%; border: 2px dashed var(--line); display: grid; place-items: center; font-style: normal; color: var(--accent-ink); font-size: 13px; font-weight: 800; transition: all .25s; }
 .slot-dots i.full { background: var(--accent); border: 2px solid var(--accent); }
-.slots small { color: var(--ink-2); font-size: 13px; }
-.slots b { display: block; font-size: 15px; }
 .perk-group h3 { font-family: var(--f-body); font-size: 12px; text-transform: uppercase; letter-spacing: .1em; color: var(--ink-2); font-weight: 700; margin-bottom: 8px; }
 .perk-list { display: grid; gap: 8px; }
 .perk { text-align: left; background: var(--surface); border: 1.5px solid var(--line); border-radius: var(--r); padding: 12px 14px; display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; align-items: center; transition: border-color .2s, opacity .2s, background .2s; }
@@ -174,7 +185,8 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 .field { display: grid; gap: 8px; }
 .field > span { font-size: 12px; text-transform: uppercase; letter-spacing: .1em; color: var(--ink-2); font-weight: 700; }
 .swatches { display: flex; flex-wrap: wrap; gap: 10px; }
-.sw { width: 52px; height: 52px; border-radius: 14px; border: 2px solid transparent; padding: 3px; background: var(--surface); box-shadow: 0 0 0 1px var(--line); }
+.pick-name { color: var(--ink); text-transform: none; letter-spacing: 0; font-size: 14px; }
+.sw { width: 46px; height: 46px; border-radius: 14px; border: 2px solid transparent; padding: 3px; background: var(--surface); box-shadow: 0 0 0 1px var(--line); }
 .sw i { display: block; width: 100%; height: 100%; border-radius: 10px; }
 .sw[aria-pressed="true"] { border-color: var(--accent); box-shadow: none; }
 .seg { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -198,6 +210,27 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 .spinner { width: 22px; height: 22px; border-radius: 50%; border: 3px solid var(--line); border-top-color: var(--accent); animation: spin .8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
+/* About you questions */
+.q-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.q-count { font-size: 12.5px; color: var(--ink-2); font-weight: 600; font-variant-numeric: tabular-nums; }
+.q-track { height: 3px; background: var(--line); border-radius: 3px; overflow: hidden; margin-top: -8px; }
+.q-track span { display: block; height: 100%; width: 0; background: var(--accent); transition: width .3s; }
+.q { display: grid; gap: 14px; animation: rise .3s ease both; }
+.q h3 { font-size: 22px; line-height: 1.15; font-weight: 700; }
+.yn-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; font-weight: 600; }
+.warn { font-size: 13.5px; color: var(--warn); font-weight: 600; }
+.opt.plain { grid-template-columns: 1fr auto; }
+.amount { font-family: var(--f-display); font-size: 38px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.03em; line-height: 1; }
+
+/* Building your card */
+.build-hero { display: flex; align-items: center; gap: 14px; }
+.build-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.build-steps li { display: grid; grid-template-columns: 22px 1fr; gap: 12px; align-items: center; color: var(--ink-2); transition: color .2s; }
+.build-steps li::before { content: ""; width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--line); box-sizing: border-box; display: grid; place-items: center; font-size: 12px; font-weight: 800; }
+.build-steps li.doing, .build-steps li.done { color: var(--ink); }
+.build-steps li.doing::before { border-top-color: var(--accent); animation: spin .8s linear infinite; }
+.build-steps li.done::before { content: "✓"; background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+
 /* Done */
 .wallet { position: relative; height: 270px; display: grid; place-items: end center; }
 .wallet .pocket { position: relative; z-index: 2; width: min(320px, 92%); height: 110px; border-radius: 22px; background: var(--ink); color: var(--bg); display: flex; align-items: flex-end; justify-content: space-between; padding: 16px 18px; font-weight: 700; }
@@ -216,7 +249,12 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 .card[data-color="ember"] { background: linear-gradient(135deg, var(--c-ember-a), var(--c-ember-b)); }
 .card[data-color="frost"] { background: linear-gradient(135deg, var(--c-frost-a), var(--c-frost-b)); color: var(--card-dark-ink); }
 .card[data-color="obsidian"] { background: linear-gradient(135deg, var(--c-obsidian-a), var(--c-obsidian-b)); }
-.card .pat { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .22; }
+.card[data-color="borealis"] { background: radial-gradient(110% 75% at 18% 0%, color-mix(in srgb, var(--c-bor-green) 70%, transparent), transparent 60%), radial-gradient(80% 70% at 88% 8%, color-mix(in srgb, var(--c-bor-violet) 75%, transparent), transparent 62%), radial-gradient(70% 50% at 55% 30%, color-mix(in srgb, var(--c-bor-teal) 45%, transparent), transparent 70%), linear-gradient(170deg, var(--c-bor-night-b), var(--c-bor-night-a) 75%); }
+/* slow-moving light curtain so the Aurora card shimmers like the real thing */
+.card[data-color="borealis"]::before { content: ""; position: absolute; inset: -30%; background: linear-gradient(100deg, transparent 28%, color-mix(in srgb, var(--c-bor-green) 50%, transparent) 40%, transparent 50%, color-mix(in srgb, var(--c-bor-violet) 40%, transparent) 60%, transparent 72%); filter: blur(14px); animation: aurora 9s ease-in-out infinite alternate; pointer-events: none; }
+@keyframes aurora { from { transform: translateX(-14%) skewX(-14deg); } to { transform: translateX(14%) skewX(10deg); } }
+.card .pat { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .34; }
+.card[data-color="frost"] .pat { opacity: .28; }
 .card .sheen { position: absolute; inset: 0; pointer-events: none; }
 .card[data-finish="gloss"] .sheen { background: linear-gradient(115deg, transparent 30%, rgba(255,255,255,.28) 45%, transparent 60%); }
 .card[data-finish="metal"] .sheen { background: repeating-linear-gradient(90deg, rgba(255,255,255,.05) 0 1px, transparent 1px 3px), linear-gradient(120deg, rgba(255,255,255,.18), transparent 40%, rgba(255,255,255,.12) 70%, transparent); }
@@ -279,7 +317,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 
     <!-- 0 Landing -->
     <section class="screen active" data-screen="0">
-      <h1>Find your north. Then build the card around it.</h1>
+      <h1>A credit card built around how you live.</h1>
       <p class="lede">Pick the perks you'll actually use, design how it looks, and check your eligibility in about two minutes. Checking won't affect your credit score.</p>
       <div class="mobile-card hide-wide" data-preview></div>
       <div class="hero-points">
@@ -293,20 +331,76 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
       </div>
     </section>
 
-    <!-- 1 Goal -->
+    <!-- 1 About you: one question at a time -->
     <section class="screen" data-screen="1">
-      <h2>What do you want your card to do for you?</h2>
-      <p class="lede">We'll recommend perks to match. You can still pick anything.</p>
-      <div class="options" id="goalOpts"></div>
-      <div class="cta-bar"><button class="btn" id="goalNext" data-go="2" disabled>Continue</button></div>
+      <div class="q-head"><h2>Let's get to know you</h2><span class="q-count" id="qCount">Question 1 of 6</span></div>
+      <div class="q-track"><span id="qBar"></span></div>
+
+      <div class="q" data-q="0">
+        <h3>What matters most to you in a credit card?</h3>
+        <p class="hint">We'll pick perks to match. You can change them later.</p>
+        <div class="options" id="goalOpts"></div>
+      </div>
+
+      <div class="q" data-q="1" hidden>
+        <h3>A couple of quick checks</h3>
+        <div class="yn-row"><span>Are you 18 or over?</span><div class="seg" id="adultOpts"></div></div>
+        <div class="yn-row"><span>Do you live in the UK?</span><div class="seg" id="ukOpts"></div></div>
+        <p class="warn" id="ageWarn" hidden>You need to be 18 or over and live in the UK to get a North card.</p>
+      </div>
+
+      <div class="q" data-q="2" hidden>
+        <h3>What's your employment status?</h3>
+        <div class="options" id="empOpts"></div>
+      </div>
+
+      <div class="q" data-q="3" hidden>
+        <h3><label for="income">What's your yearly income before tax?</label></h3>
+        <div class="amount" id="incomeOut">£32,000</div>
+        <input type="range" id="income" min="0" max="150000" step="1000" value="32000">
+        <p class="hint">Include salary, pension and any benefits. A rough figure is fine.</p>
+      </div>
+
+      <div class="q" data-q="4" hidden>
+        <h3><label for="housing">How much do you pay for rent or mortgage each month?</label></h3>
+        <div class="amount" id="housingOut">£850</div>
+        <input type="range" id="housing" min="0" max="3000" step="25" value="850">
+        <p class="hint">Just your share. Choose £0 if you live with family rent-free.</p>
+      </div>
+
+      <div class="q" data-q="5" hidden>
+        <h3>In the last 6 years, have you had a CCJ, bankruptcy or IVA?</h3>
+        <div class="seg" id="ccjOpts"></div>
+        <p class="hint">A CCJ is a county court judgment for unpaid debt. Answering yes doesn't stop you applying.</p>
+      </div>
+
+      <div class="cta-bar">
+        <button class="btn" id="qNext" disabled>Continue</button>
+        <p class="fine">None of this affects your credit score.</p>
+      </div>
+    </section>
+
+    <!-- 7 Building your card (holding screen) -->
+    <section class="screen" data-screen="7">
+      <div class="build-hero"><span class="spinner" id="buildSpin"></span><h2 id="buildTitle">Building your card…</h2></div>
+      <ol class="build-steps" id="buildSteps">
+        <li>Checking your eligibility with a soft search</li>
+        <li>Matching perks to what matters to you</li>
+        <li>Working out your credit limit</li>
+      </ol>
+      <div id="buildResult" hidden></div>
+      <div class="cta-bar" id="buildCta" hidden><button class="btn" data-go="2">See my perks</button></div>
     </section>
 
     <!-- 2 Perks -->
     <section class="screen" data-screen="2">
       <h2>Pick your three perks</h2>
-      <div class="slots">
-        <span><b id="slotTitle">3 slots left</b><small>Swap perks every 90 days in the app</small></span>
-        <span class="slot-dots" id="slotDots"><i></i><i></i><i></i></span>
+      <div class="rec-box">
+        <div class="rec-top">
+          <span><b>Recommended for you</b><small>These 3 suit what matters to you most. Not quite right? Swap any of them.</small></span>
+          <span class="slot-dots" id="slotDots"><i></i><i></i><i></i></span>
+        </div>
+        <div class="rec-apr"><span>Your rate</span><b id="recApr">24.9% APR representative (variable)</b></div>
       </div>
       <div class="spend-box">
         <label for="spend">How much do you put on a card each month?</label>
@@ -325,9 +419,9 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 
     <!-- 3 Design -->
     <section class="screen" data-screen="3">
-      <h2>Make it yours</h2>
+      <div class="q-head"><h2>Make it yours</h2><button type="button" class="btn ghost small" id="surprise">✦ Surprise me</button></div>
       <div class="mobile-card hide-wide" data-preview></div>
-      <div class="field"><span>Colour</span><div class="swatches" id="colorOpts"></div></div>
+      <div class="field"><span>Colour · <b class="pick-name" id="colorName">Aurora</b></span><div class="swatches" id="colorOpts"></div></div>
       <div class="field"><span>Pattern</span><div class="seg" id="patternOpts"></div></div>
       <div class="field"><span>Finish</span><div class="seg" id="finishOpts"></div></div>
       <div class="field"><span>Orientation</span><div class="seg" id="orientOpts"></div></div>
@@ -339,23 +433,15 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
       <div class="cta-bar"><button class="btn" data-go="4">Looks good</button></div>
     </section>
 
-    <!-- 4 Check -->
+    <!-- 4 Review -->
     <section class="screen" data-screen="4">
-      <h2>Check your eligibility</h2>
-      <p class="lede">A soft search only. It won't show on your credit file to other lenders.</p>
-      <div class="field">
-        <span><label for="income">Annual income before tax</label></span>
-        <div class="value-box" style="background: var(--surface); color: var(--ink); border: 1px solid var(--line)">
-          <div class="row"><div class="big" id="incomeOut" style="font-size:28px">£32,000</div></div>
-          <input type="range" id="income" min="8000" max="150000" step="1000" value="32000">
-        </div>
-      </div>
-      <div class="field"><span>Employment</span><div class="seg" id="empOpts"></div></div>
+      <h2>Check and apply</h2>
+      <div class="mobile-card hide-wide" data-preview></div>
       <div class="summary" id="summary"></div>
-      <div id="checkResult"></div>
+      <p class="hint" id="repExample"></p>
       <div class="cta-bar">
-        <button class="btn" id="checkBtn">Check eligibility</button>
-        <p class="fine">Figures are illustrative. Representative example shown before you apply.</p>
+        <button class="btn" data-go="5">Apply and get my card</button>
+        <p class="fine">Applying runs a full credit check. All figures are illustrative.</p>
       </div>
     </section>
 
@@ -401,28 +487,48 @@ const PERKS = [
   { id: 'builder', group: 'Credit building', name: 'Credit Builder', sub: 'Monthly score updates and a limit review every 6 months', value: () => 0, label: 'Included' }
 ];
 const COLORS = [
-  { id: 'polar', name: 'Polar Night' }, { id: 'aurora', name: 'Aurora' }, { id: 'ember', name: 'Ember' },
-  { id: 'frost', name: 'Frost' }, { id: 'obsidian', name: 'Obsidian' }
+  { id: 'borealis', name: 'Aurora' }, { id: 'polar', name: 'Polar Night' }, { id: 'aurora', name: 'Fjord' },
+  { id: 'ember', name: 'Midnight Sun' }, { id: 'frost', name: 'Glacier White' }, { id: 'obsidian', name: 'Arctic Basalt' }
 ];
-const PATTERNS = [{ id: 'none', name: 'Clean' }, { id: 'compass', name: 'Compass' }, { id: 'contour', name: 'Contours' }, { id: 'stars', name: 'Stars' }];
+const swatchBG = id => id === 'borealis'
+  ? 'radial-gradient(90% 80% at 20% 10%, var(--c-bor-green), transparent 65%), radial-gradient(80% 80% at 90% 10%, var(--c-bor-violet), transparent 65%), var(--c-bor-night-a)'
+  : `linear-gradient(135deg, var(--c-${id}-a), var(--c-${id}-b))`;
+const PATTERNS = [{ id: 'fjord', name: 'Fjord peaks' }, { id: 'curtains', name: 'Aurora curtains' }, { id: 'polaris', name: 'Polaris' }, { id: 'globe', name: 'Top of the world' }, { id: 'none', name: 'Clean' }];
 const FINISHES = [{ id: 'matte', name: 'Matte' }, { id: 'gloss', name: 'Gloss' }, { id: 'metal', name: 'Brushed metal' }];
 const ORIENT = [{ id: 'h', name: 'Landscape' }, { id: 'v', name: 'Portrait' }];
-const EMP = [{ id: 'employed', name: 'Employed' }, { id: 'self', name: 'Self-employed' }, { id: 'student', name: 'Student' }, { id: 'retired', name: 'Retired' }];
+const EMP = [{ id: 'employed', name: 'Employed' }, { id: 'self', name: 'Self-employed' }, { id: 'student', name: 'Student' }, { id: 'retired', name: 'Retired' }, { id: 'other', name: 'Not working right now' }];
+const YN = [{ id: 'yes', name: 'Yes' }, { id: 'no', name: 'No' }];
 
-const state = { step: 0, goal: null, perks: [], spend: 1200, color: 'aurora', pattern: 'compass', finish: 'matte', orient: 'h', name: 'Alex Morgan', income: 32000, emp: 'employed', checked: false };
+const state = { step: 0, q: 0, goal: null, adult: null, uk: null, emp: null, income: 32000, housing: 850, ccj: null, perks: [], spend: 1200, color: 'borealis', pattern: 'fjord', finish: 'matte', orient: 'h', name: 'Alex Morgan' };
 
 const $ = s => document.querySelector(s);
 const gbp = n => '£' + Math.round(n).toLocaleString('en-GB');
 
+// Card imagery, all drawn on a 160x100 canvas in the card's ink colour
+const sparkle = (x, y, r) => `<path d="M${x} ${y - r} L${x + r * .22} ${y - r * .22} L${x + r} ${y} L${x + r * .22} ${y + r * .22} L${x} ${y + r} L${x - r * .22} ${y + r * .22} L${x - r} ${y} L${x - r * .22} ${y - r * .22} Z"/>`;
+const PLOUGH = [[20, 80], [36, 72], [50, 67], [64, 63], [88, 58], [92, 79], [68, 81]]; // Alkaid → Dubhe → Merak → Phecda
 const PATTERN_SVG = {
   none: '',
-  compass: '<svg class="pat" viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice"><g fill="none" stroke="currentColor" stroke-width=".6"><circle cx="128" cy="78" r="18"/><circle cx="128" cy="78" r="34"/><circle cx="128" cy="78" r="52"/><circle cx="128" cy="78" r="72"/><path d="M128 0V160M48 78H210M72 22L184 134M184 22L72 134"/></g></svg>',
-  contour: '<svg class="pat" viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice"><g fill="none" stroke="currentColor" stroke-width=".7">' +
-    Array.from({ length: 9 }, (_, i) => `<path d="M-10 ${20 + i * 10} C 30 ${5 + i * 10}, 60 ${40 + i * 9}, 100 ${18 + i * 10} S 150 ${30 + i * 9}, 175 ${12 + i * 10}"/>`).join('') + '</g></svg>',
-  stars: '<svg class="pat" viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice"><g fill="currentColor">' +
-    [[20,14,1],[44,30,.7],[70,10,1.2],[96,24,.6],[120,12,.9],[142,30,1.4],[30,52,.6],[60,64,1],[88,48,.8],[112,66,.6],[136,56,1],[150,80,.7],[18,84,.9],[78,88,.6],[104,92,1.1]]
-      .map(([x,y,r]) => `<circle cx="${x}" cy="${y}" r="${r}"/>`).join('') +
-    '</g><path d="M70 10 L96 24 L120 12 L142 30" fill="none" stroke="currentColor" stroke-width=".4"/></svg>'
+  fjord: '<svg class="pat" viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice"><g fill="currentColor">' +
+    '<path opacity=".45" d="M0 66 L14 50 L24 58 L42 30 L52 44 L60 38 L78 56 L96 34 L108 46 L122 26 L138 48 L150 40 L160 46 V100 H0Z"/>' +
+    '<path opacity=".55" d="M42 30 L37 38 L42 36 L46 40 Z M96 34 L91 41 L96 39 L100 42 Z M122 26 L116 35 L122 32 L127 36 Z"/>' +
+    '<path opacity=".7" d="M0 80 L20 62 L36 72 L58 52 L76 70 L94 58 L116 74 L136 60 L160 70 V100 H0Z"/>' +
+    '<path d="M0 92 L24 80 L48 88 L72 76 L100 90 L128 80 L160 90 V100 H0Z"/></g></svg>',
+  curtains: '<svg class="pat" viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="ray" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="currentColor" stop-opacity="1"/><stop offset="1" stop-color="currentColor" stop-opacity="0"/></linearGradient></defs>' +
+    '<g fill="none" stroke="currentColor" stroke-linecap="round"><path stroke-width="7" opacity=".7" d="M-10 30 C 30 8, 60 48, 100 22 S 150 18, 175 34"/><path stroke-width="3" opacity=".5" d="M-10 46 C 34 26, 70 62, 110 38 S 152 40, 175 50"/></g>' +
+    '<g stroke="url(#ray)" stroke-linecap="round">' +
+    Array.from({ length: 33 }, (_, i) => { const x = i * 5; const y = 28 + 11 * Math.sin(x / 17) - 6 * Math.cos(x / 9); return `<line x1="${x}" y1="${y.toFixed(1)}" x2="${(x + 5).toFixed(1)}" y2="${(y + 30 + 10 * Math.sin(i * 1.7)).toFixed(1)}" stroke-width="${(1.4 + (i % 3)).toFixed(1)}"/>`; }).join('') +
+    '</g></svg>',
+  polaris: '<svg class="pat" viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice"><g fill="none" stroke="currentColor" stroke-width=".8">' +
+    `<path d="M${PLOUGH.map(p => p.join(' ')).join(' L')} L64 63"/><path stroke-dasharray="2 3" d="M88 58 L116 38"/>` +
+    '</g><g fill="currentColor">' + PLOUGH.map(([x, y]) => `<circle cx="${x}" cy="${y}" r="2.1"/>`).join('') + sparkle(120, 35, 8) +
+    [[12, 18, .8], [40, 34, .6], [70, 22, 1], [104, 44, .7], [150, 40, .9], [140, 76, .7], [116, 92, 1], [8, 52, .6], [58, 94, .8], [150, 8, .6]].map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}"/>`).join('') +
+    '</g></svg>',
+  globe: '<svg class="pat" viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice"><g fill="none" stroke="currentColor">' +
+    [16, 32, 48, 64, 80].map(r => `<circle cx="118" cy="74" r="${r}" stroke-width="${r === 80 ? 1.6 : .8}"/>`).join('') +
+    '<circle cx="118" cy="74" r="24" stroke-width="1.6" stroke-dasharray="3 3"/>' +
+    Array.from({ length: 12 }, (_, i) => { const a = i * Math.PI / 6; return `<line x1="118" y1="74" x2="${(118 + 80 * Math.cos(a)).toFixed(1)}" y2="${(74 + 80 * Math.sin(a)).toFixed(1)}" stroke-width=".6"/>`; }).join('') +
+    '</g><g fill="currentColor"><circle cx="118" cy="74" r="2.6"/></g></svg>'
 };
 
 function tierName() {
@@ -485,7 +591,7 @@ function renderGoals() {
     state.goal = b.dataset.v;
     if (changed) state.perks = [...GOALS.find(g => g.id === state.goal).rec];
     renderGoals(); renderPerks(); renderPreviews();
-    $('#goalNext').disabled = false;
+    updateQ();
   };
 }
 
@@ -497,13 +603,13 @@ function renderPerks() {
     PERKS.filter(p => p.group === g).map(p => {
       const on = state.perks.includes(p.id);
       return `<button type="button" class="perk ${!on && full ? 'locked' : ''}" data-v="${p.id}" aria-pressed="${on}">
-        <b>${p.name}${rec.includes(p.id) ? '<span class="badge">For you</span>' : ''}${p.fee ? `<span class="badge fee">£${p.fee}/mo</span>` : ''}</b>
+        <b>${p.name}${rec.includes(p.id) ? '<span class="badge">Recommended</span>' : ''}${p.fee ? `<span class="badge fee">£${p.fee}/mo</span>` : ''}</b>
         <small>${p.sub}</small><span class="tog">${on ? '✓' : ''}</span></button>`;
     }).join('') + '</div></div>').join('');
 
   const n = state.perks.length;
   $('#slotDots').innerHTML = [0, 1, 2].map(i => `<i class="${i < n ? 'full' : ''}">${i < n ? '✓' : ''}</i>`).join('');
-  $('#slotTitle').textContent = n === 3 ? 'All slots filled' : `${3 - n} slot${3 - n === 1 ? '' : 's'} left`;
+  $('#recApr').textContent = `${offer().apr}% APR representative (variable)`;
   $('#perksNext').disabled = n !== 3;
   $('#perksNext').textContent = n === 3 ? 'Design my card' : `Pick ${3 - n} more`;
   renderValue();
@@ -532,7 +638,8 @@ $('#perkGroups').addEventListener('click', e => {
 $('#spend').addEventListener('input', e => { state.spend = +e.target.value; renderValue(); renderPreviews(); });
 
 function renderDesign() {
-  $('#colorOpts').innerHTML = COLORS.map(c => `<button type="button" class="sw" data-v="${c.id}" aria-label="${c.name}" title="${c.name}" aria-pressed="${state.color === c.id}"><i style="background: linear-gradient(135deg, var(--c-${c.id}-a), var(--c-${c.id}-b))"></i></button>`).join('');
+  $('#colorOpts').innerHTML = COLORS.map(c => `<button type="button" class="sw" data-v="${c.id}" aria-label="${c.name}" title="${c.name}" aria-pressed="${state.color === c.id}"><i style="background: ${swatchBG(c.id)}"></i></button>`).join('');
+  $('#colorName').textContent = COLORS.find(c => c.id === state.color).name;
   $('#colorOpts').onclick = e => {
     const b = e.target.closest('.sw'); if (!b) return;
     state.color = b.dataset.v; renderDesign(); renderPreviews();
@@ -542,13 +649,25 @@ function renderDesign() {
   segment($('#orientOpts'), ORIENT, 'orient');
 }
 $('#holderName').addEventListener('input', e => { state.name = e.target.value; renderPreviews(); });
+// Surprise me: a random new combination, always different from the current colour, pattern and finish
+$('#surprise').addEventListener('click', () => {
+  const pick = (items, cur) => { const rest = items.filter(i => i.id !== cur); return rest[Math.floor(Math.random() * rest.length)].id; };
+  state.color = pick(COLORS, state.color);
+  state.pattern = pick(PATTERNS.filter(p => p.id !== 'none'), state.pattern);
+  state.finish = pick(FINISHES, state.finish);
+  state.orient = Math.random() < 0.25 ? 'v' : 'h';
+  renderDesign(); renderPreviews();
+  document.querySelectorAll('.card').forEach(c => c.animate([{ transform: 'perspective(800px) rotateY(80deg) scale(.95)' }, { transform: 'none' }], { duration: 450, easing: 'cubic-bezier(.2,.8,.3,1)' }));
+});
 
 function offer() {
-  const base = { employed: 0.22, self: 0.18, student: 0.08, retired: 0.15 }[state.emp];
-  let limit = Math.round(Math.min(state.income * base, 15000) / 50) * 50;
+  const base = { employed: 0.22, self: 0.18, student: 0.08, retired: 0.15, other: 0.06 }[state.emp] ?? 0.15;
+  let limit = Math.min(state.income * base, 15000);
+  if (state.housing * 12 > state.income * 0.4) limit *= 0.6;
   if (state.goal === 'build') limit = Math.min(limit, 1200);
-  limit = Math.max(limit, 250);
-  const apr = state.goal === 'build' || state.emp === 'student' ? 29.9 : 24.9;
+  if (state.ccj === 'yes') limit = Math.min(limit, 500);
+  limit = Math.max(Math.round(limit / 50) * 50, 250);
+  const apr = state.ccj === 'yes' ? 34.9 : (state.goal === 'build' || state.emp === 'student' ? 29.9 : 24.9);
   return { limit, apr };
 }
 function summaryRows() {
@@ -557,31 +676,79 @@ function summaryRows() {
     ['Card', `North ${tierName()}`],
     ['Perks', t.sel.map(p => p.name).join(', ')],
     ['Design', `${COLORS.find(c => c.id === state.color).name}, ${PATTERNS.find(p => p.id === state.pattern).name.toLowerCase()}, ${state.finish === 'metal' ? 'brushed metal' : state.finish}`],
+    ['Credit limit', `Up to ${gbp(o.limit)}`],
     ['Monthly fee', t.fee ? gbp(t.fee) : '£0'],
     ['Representative APR', `${o.apr}% (variable)`]
   ].map(([k, v]) => `<div><span>${k}</span><span>${v}</span></div>`).join('');
 }
-function renderCheck() {
-  $('#incomeOut').textContent = gbp(state.income);
-  $('#summary').innerHTML = summaryRows();
-  segment($('#empOpts'), EMP, 'emp', resetCheck);
+// "Let's get to know you": one question per view; each needs an answer before Continue
+const Q_VALID = [
+  () => !!state.goal,
+  () => state.adult === 'yes' && state.uk === 'yes',
+  () => !!state.emp,
+  () => true,
+  () => true,
+  () => state.ccj !== null
+];
+function showQ() {
+  document.querySelectorAll('.q').forEach(el => el.hidden = +el.dataset.q !== state.q);
+  $('#qCount').textContent = `Question ${state.q + 1} of ${Q_VALID.length}`;
+  $('#qBar').style.width = `${(state.q + 1) / Q_VALID.length * 100}%`;
+  updateQ();
 }
-function resetCheck() {
-  state.checked = false; $('#checkResult').innerHTML = '';
-  $('#checkBtn').textContent = 'Check eligibility'; $('#checkBtn').disabled = false;
-  $('#summary').innerHTML = summaryRows();
+function updateQ() {
+  $('#qNext').disabled = !Q_VALID[state.q]();
+  $('#qNext').textContent = state.q === Q_VALID.length - 1 ? 'Build my card' : 'Continue';
+  $('#ageWarn').hidden = !(state.adult === 'no' || state.uk === 'no');
 }
-$('#income').addEventListener('input', e => { state.income = +e.target.value; $('#incomeOut').textContent = gbp(state.income); resetCheck(); });
-$('#checkBtn').addEventListener('click', () => {
-  if (state.checked) return go(5);
-  const btn = $('#checkBtn'); btn.disabled = true;
-  $('#checkResult').innerHTML = '<div class="scanning"><span class="spinner"></span>Running a soft search…</div>';
-  setTimeout(() => {
-    const o = offer();
-    $('#checkResult').innerHTML = `<div class="result"><span class="pill">Likely to be approved</span><b>Credit limit up to ${gbp(o.limit)}</b><small>${o.apr}% APR representative (variable). Based on a limit of £1,200 and spending it all, you'd pay ${gbp(1200 * o.apr / 100 / 12)} interest in your first month if you didn't pay it off.</small></div>`;
-    state.checked = true; btn.disabled = false; btn.textContent = 'Apply and get my card';
-  }, 1400);
+$('#qNext').addEventListener('click', () => {
+  if (!Q_VALID[state.q]()) return;
+  if (state.q < Q_VALID.length - 1) { state.q++; showQ(); window.scrollTo(0, 0); }
+  else go(7);
 });
+function renderAbout() {
+  segment($('#adultOpts'), YN, 'adult', updateQ);
+  segment($('#ukOpts'), YN, 'uk', updateQ);
+  segment($('#ccjOpts'), YN, 'ccj', updateQ);
+  $('#empOpts').innerHTML = EMP.map(e => `<button type="button" class="opt plain" data-v="${e.id}" aria-pressed="${state.emp === e.id}"><b>${e.name}</b><span class="radio"></span></button>`).join('');
+  $('#empOpts').onclick = e => {
+    const b = e.target.closest('.opt'); if (!b) return;
+    state.emp = b.dataset.v; renderAbout(); updateQ();
+  };
+  $('#income').value = state.income; $('#incomeOut').textContent = gbp(state.income);
+  $('#housing').value = state.housing; $('#housingOut').textContent = gbp(state.housing);
+}
+$('#income').addEventListener('input', e => { state.income = +e.target.value; $('#incomeOut').textContent = gbp(state.income); });
+$('#housing').addEventListener('input', e => { state.housing = +e.target.value; $('#housingOut').textContent = gbp(state.housing); });
+
+// Holding screen: tick through each step, then reveal the offer
+let buildTimers = [];
+function runBuild() {
+  buildTimers.forEach(clearTimeout); buildTimers = [];
+  const steps = [...document.querySelectorAll('#buildSteps li')];
+  const gap = 900;
+  steps.forEach(li => li.className = '');
+  $('#buildTitle').textContent = 'Building your card…';
+  $('#buildSpin').hidden = false; $('#buildResult').hidden = true; $('#buildCta').hidden = true;
+  steps.forEach((li, i) => {
+    buildTimers.push(setTimeout(() => li.className = 'doing', i * gap));
+    buildTimers.push(setTimeout(() => li.className = 'done', i * gap + gap - 150));
+  });
+  buildTimers.push(setTimeout(() => {
+    const o = offer();
+    const aim = { build: 'build your credit score', everyday: 'get money back on everyday spending', travel: 'earn travel rewards', spread: 'spread the cost of something' }[state.goal];
+    $('#buildTitle').textContent = 'Good news';
+    $('#buildSpin').hidden = true;
+    $('#buildResult').innerHTML = `<div class="result"><span class="pill">Likely to be approved</span><b>Credit limit up to ${gbp(o.limit)}</b><small>${o.apr}% APR representative (variable). We've picked 3 perks to help you ${aim}. You can change them next.</small></div>`;
+    $('#buildResult').hidden = false; $('#buildCta').hidden = false;
+  }, steps.length * gap + 200));
+}
+
+function renderReview() {
+  const o = offer();
+  $('#summary').innerHTML = summaryRows();
+  $('#repExample').textContent = `Representative example: assumed credit limit of £1,200. Purchase rate ${o.apr}% p.a. (variable). ${o.apr}% APR representative (variable).`;
+}
 
 function renderDone() {
   const o = offer(); const t = totals();
@@ -591,31 +758,41 @@ function renderDone() {
   ].map(([k, v]) => `<div><span>${k}</span><span>${v}</span></div>`).join('');
 }
 
-const LABELS = ['', 'Step 1 of 4 · Your goal', 'Step 2 of 4 · Perks', 'Step 3 of 4 · Design', 'Step 4 of 4 · Eligibility'];
+// screen -> [progress bar segments lit, label]; 7 is the holding screen inside step 1
+const FLOW = {
+  1: [1, 'Step 1 of 4 · About you'], 7: [1, 'Step 1 of 4 · About you'],
+  2: [2, 'Step 2 of 4 · Perks'], 3: [3, 'Step 3 of 4 · Design'], 4: [4, 'Step 4 of 4 · Review']
+};
 function go(n) {
   state.step = n;
   document.querySelectorAll('.screen').forEach(s => s.classList.toggle('active', +s.dataset.screen === n));
-  const inFlow = n >= 1 && n <= 4;
-  $('#progressWrap').hidden = !inFlow;
-  $('#backBtn').hidden = !inFlow;
-  $('#topBrand').hidden = inFlow;
-  if (inFlow) {
-    $('#stepLabel').textContent = LABELS[n];
-    document.querySelectorAll('#progress span').forEach((s, i) => s.classList.toggle('on', i < n));
+  const flow = FLOW[n];
+  $('.studio').classList.toggle('pre-card', n === 1 || n === 7);
+  $('#progressWrap').hidden = !flow;
+  $('#backBtn').hidden = !flow || n === 7;
+  $('#topBrand').hidden = !$('#backBtn').hidden;
+  if (flow) {
+    $('#stepLabel').textContent = flow[1];
+    document.querySelectorAll('#progress span').forEach((s, i) => s.classList.toggle('on', i < flow[0]));
   }
-  if (n === 4) renderCheck();
+  if (n === 1) showQ();
+  if (n === 7) runBuild();
+  if (n === 4) renderReview();
   if (n === 5) renderDone();
   renderPreviews();
   window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
 }
 document.addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (b && !b.disabled) go(+b.dataset.go); });
-$('#backBtn').addEventListener('click', () => go(Math.max(0, state.step - 1)));
+$('#backBtn').addEventListener('click', () => {
+  if (state.step === 1 && state.q > 0) { state.q--; showQ(); }
+  else go(Math.max(0, state.step - 1));
+});
 $('#restart').addEventListener('click', () => {
-  Object.assign(state, { goal: null, perks: [], checked: false });
-  $('#goalNext').disabled = true; renderGoals(); renderPerks(); resetCheck(); go(0);
+  Object.assign(state, { q: 0, goal: null, adult: null, uk: null, emp: null, ccj: null, perks: [] });
+  renderGoals(); renderAbout(); renderPerks(); go(0);
 });
 
-renderGoals(); renderPerks(); renderDesign(); renderPreviews();
+renderGoals(); renderAbout(); renderPerks(); renderDesign(); renderPreviews();
 </script>
 </body>
 </html>

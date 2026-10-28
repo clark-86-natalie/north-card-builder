@@ -6,11 +6,11 @@ Built for a work hackathon. North is not a real bank, and every rate, limit, fee
 
 ## The flow
 
-1. **Landing**: the "Find your north" pitch.
-2. **Your goal**: build credit, everyday cashback, travel rewards or spreading costs. Recommended perks are pre-selected.
+1. **Landing**: "A credit card built around how you live."
+2. **Let's get to know you**: one question at a time covering what matters most, age and UK residency, employment, income, rent or mortgage, and any CCJs. A "Building your card" screen then shows a simulated soft-search result.
 3. **Pick 3 perks**: a spend slider estimates what your perks are worth per year, after fees.
 4. **Design**: colour, pattern, finish, orientation and the name on the card.
-5. **Eligibility**: a simulated soft search returns a likely credit limit and representative APR.
+5. **Review**: a summary with credit limit and representative APR, then apply.
 6. **Card ready**: the card drops into your phone wallet.
 
 ## Run it
