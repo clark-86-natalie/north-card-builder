@@ -35,6 +35,7 @@
   --c-obsidian-a: #111317; --c-obsidian-b: #2c2f36;
   --c-birch-a: #ecdcbf; --c-birch-b: #cfae82;
   --birch-grain: repeating-linear-gradient(93deg, rgba(110, 72, 34, .09) 0 1.5px, transparent 1.5px 6px), repeating-linear-gradient(87deg, rgba(110, 72, 34, .06) 0 1px, transparent 1px 14px);
+  --c-brt-base-a: #2a1a7a; --c-brt-base-b: #0d3d8a; --c-brt-green: #4dffb4; --c-brt-cyan: #3fe6ff; --c-brt-pink: #ff5fd0;
   --c-bor-night-a: #030918; --c-bor-night-b: #0a1d3a; --c-bor-green: #2ef2a0; --c-bor-teal: #17c3c9; --c-bor-violet: #9b6bff;
   --card-light-ink: #f4f8fb;
   --card-dark-ink: #10233b;
@@ -186,9 +187,9 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 /* Design controls */
 .field { display: grid; gap: 8px; }
 .field > span { font-size: 12px; text-transform: uppercase; letter-spacing: .1em; color: var(--ink-2); font-weight: 700; }
-.swatches { display: flex; flex-wrap: wrap; gap: 10px; }
+.swatches { display: flex; flex-wrap: wrap; gap: 8px; }
 .pick-name { color: var(--ink); text-transform: none; letter-spacing: 0; font-size: 14px; }
-.sw { width: 46px; height: 46px; border-radius: 14px; border: 2px solid transparent; padding: 3px; background: var(--surface); box-shadow: 0 0 0 1px var(--line); }
+.sw { width: 42px; height: 42px; border-radius: 14px; border: 2px solid transparent; padding: 3px; background: var(--surface); box-shadow: 0 0 0 1px var(--line); }
 .sw i { display: block; width: 100%; height: 100%; border-radius: 10px; }
 .sw[aria-pressed="true"] { border-color: var(--accent); box-shadow: none; }
 .seg { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -253,6 +254,8 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 .card[data-color="frost"] { --card-bg: linear-gradient(135deg, var(--c-frost-a), var(--c-frost-b)); color: var(--card-dark-ink); }
 .card[data-color="obsidian"] { --card-bg: linear-gradient(135deg, var(--c-obsidian-a), var(--c-obsidian-b)); }
 .card[data-color="borealis"] { --card-bg: radial-gradient(110% 75% at 18% 0%, color-mix(in srgb, var(--c-bor-green) 70%, transparent), transparent 60%), radial-gradient(80% 70% at 88% 8%, color-mix(in srgb, var(--c-bor-violet) 75%, transparent), transparent 62%), radial-gradient(70% 50% at 55% 30%, color-mix(in srgb, var(--c-bor-teal) 45%, transparent), transparent 70%), linear-gradient(170deg, var(--c-bor-night-b), var(--c-bor-night-a) 75%); }
+.card[data-color="bright"] { --card-bg: radial-gradient(100% 80% at 12% 5%, color-mix(in srgb, var(--c-brt-green) 90%, transparent), transparent 58%), radial-gradient(85% 75% at 92% 10%, color-mix(in srgb, var(--c-brt-pink) 85%, transparent), transparent 60%), radial-gradient(70% 60% at 50% 45%, color-mix(in srgb, var(--c-brt-cyan) 60%, transparent), transparent 70%), linear-gradient(160deg, var(--c-brt-base-b), var(--c-brt-base-a)); }
+.card[data-color="bright"]::before { content: ""; position: absolute; inset: -30%; background: linear-gradient(100deg, transparent 25%, color-mix(in srgb, var(--c-brt-green) 65%, transparent) 38%, transparent 48%, color-mix(in srgb, var(--c-brt-pink) 55%, transparent) 58%, transparent 70%); filter: blur(12px); animation: aurora 7s ease-in-out infinite alternate; pointer-events: none; }
 /* slow-moving light curtain so the Aurora card shimmers like the real thing */
 .card[data-color="borealis"]::before { content: ""; position: absolute; inset: -30%; background: linear-gradient(100deg, transparent 28%, color-mix(in srgb, var(--c-bor-green) 50%, transparent) 40%, transparent 50%, color-mix(in srgb, var(--c-bor-violet) 40%, transparent) 60%, transparent 72%); filter: blur(14px); animation: aurora 9s ease-in-out infinite alternate; pointer-events: none; }
 @keyframes aurora { from { transform: translateX(-14%) skewX(-14deg); } to { transform: translateX(14%) skewX(10deg); } }
@@ -502,13 +505,15 @@ const PERKS = [
   { id: 'builder', group: 'Credit building', name: 'Credit Builder', sub: 'Monthly score updates and a limit review every 6 months', value: () => 0, label: 'Included' }
 ];
 const COLORS = [
-  { id: 'borealis', name: 'Aurora' }, { id: 'polar', name: 'Polar Night' }, { id: 'aurora', name: 'Fjord' },
+  { id: 'borealis', name: 'Aurora' }, { id: 'bright', name: 'Aurora Bright' }, { id: 'polar', name: 'Polar Night' }, { id: 'aurora', name: 'Fjord' },
   { id: 'ember', name: 'Midnight Sun' }, { id: 'frost', name: 'Glacier White' }, { id: 'obsidian', name: 'Arctic Basalt' }
 ];
 const swatchBG = id => id === 'borealis'
   ? 'radial-gradient(90% 80% at 20% 10%, var(--c-bor-green), transparent 65%), radial-gradient(80% 80% at 90% 10%, var(--c-bor-violet), transparent 65%), var(--c-bor-night-a)'
+  : id === 'bright'
+  ? 'radial-gradient(90% 80% at 15% 15%, var(--c-brt-green), transparent 65%), radial-gradient(80% 80% at 90% 20%, var(--c-brt-pink), transparent 65%), var(--c-brt-base-a)'
   : `linear-gradient(135deg, var(--c-${id}-a), var(--c-${id}-b))`;
-const PATTERNS = [{ id: 'fjord', name: 'Fjord peaks' }, { id: 'curtains', name: 'Aurora curtains' }, { id: 'polaris', name: 'Polaris' }, { id: 'globe', name: 'Top of the world' }, { id: 'none', name: 'Clean' }];
+const PATTERNS = [{ id: 'fjord', name: 'Fjord peaks' }, { id: 'forest', name: 'Boreal forest' },{ id: 'curtains', name: 'Aurora curtains' }, { id: 'polaris', name: 'Polaris' }, { id: 'globe', name: 'Top of the world' }, { id: 'none', name: 'Clean' }];
 const FINISHES = [{ id: 'matte', name: 'Matte' }, { id: 'gloss', name: 'Gloss' }];
 const MATERIALS = [{ id: 'plastic', name: 'Recycled plastic', fee: 0 }, { id: 'steel', name: 'Brushed steel', fee: 49 }, { id: 'birch', name: 'Birch wood', fee: 25 }];
 const material = () => MATERIALS.find(m => m.id === state.material);
@@ -524,8 +529,16 @@ const gbp = n => '£' + Math.round(n).toLocaleString('en-GB');
 // Card imagery, all drawn on a 160x100 canvas in the card's ink colour
 const sparkle = (x, y, r) => `<path d="M${x} ${y - r} L${x + r * .22} ${y - r * .22} L${x + r} ${y} L${x + r * .22} ${y + r * .22} L${x} ${y + r} L${x - r * .22} ${y + r * .22} L${x - r} ${y} L${x - r * .22} ${y - r * .22} Z"/>`;
 const PLOUGH = [[20, 80], [36, 72], [50, 67], [64, 63], [88, 58], [92, 79], [68, 81]]; // Alkaid → Dubhe → Merak → Phecda
+// A pine silhouette: three stacked tiers and a trunk, tip at (x, base - h)
+const pine = (x, base, h) => { const w = h * .42; return `M${x} ${base - h}L${x + w * .5} ${base - h * .55}H${x + w * .28}L${x + w * .75} ${base - h * .2}H${x + w * .12}V${base}H${x - w * .12}V${base - h * .2}H${x - w * .75}L${x - w * .28} ${base - h * .55}H${x - w * .5}Z`; };
+const treeRow = (n, step, offset, base, h, vary) => Array.from({ length: n }, (_, i) => pine(offset + i * step, base, h + vary * Math.sin(i * 2.3 + offset))).join('');
 const PATTERN_SVG = {
   none: '',
+  forest: '<svg class="pat" viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice"><g fill="currentColor">' +
+    `<path opacity=".4" d="${treeRow(20, 8.5, 2, 74, 24, 6)}"/>` +
+    `<path opacity=".7" d="${treeRow(14, 12, 6, 90, 34, 8)}"/>` +
+    `<path d="${treeRow(9, 19, 10, 106, 40, 8)}"/>` +
+    '<circle cx="96" cy="22" r="6" opacity=".7"/></g></svg>',
   fjord: '<svg class="pat" viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice"><g fill="currentColor">' +
     '<path opacity=".45" d="M0 66 L14 50 L24 58 L42 30 L52 44 L60 38 L78 56 L96 34 L108 46 L122 26 L138 48 L150 40 L160 46 V100 H0Z"/>' +
     '<path opacity=".55" d="M42 30 L37 38 L42 36 L46 40 Z M96 34 L91 41 L96 39 L100 42 Z M122 26 L116 35 L122 32 L127 36 Z"/>' +
