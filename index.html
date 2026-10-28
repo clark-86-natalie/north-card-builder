@@ -33,6 +33,8 @@
   --c-ember-a: #c2453a; --c-ember-b: #f08a5d;
   --c-frost-a: #dfe7ee; --c-frost-b: #b8c8d6;
   --c-obsidian-a: #111317; --c-obsidian-b: #2c2f36;
+  --c-birch-a: #ecdcbf; --c-birch-b: #cfae82;
+  --birch-grain: repeating-linear-gradient(93deg, rgba(110, 72, 34, .09) 0 1.5px, transparent 1.5px 6px), repeating-linear-gradient(87deg, rgba(110, 72, 34, .06) 0 1px, transparent 1px 14px);
   --c-bor-night-a: #030918; --c-bor-night-b: #0a1d3a; --c-bor-green: #2ef2a0; --c-bor-teal: #17c3c9; --c-bor-violet: #9b6bff;
   --card-light-ink: #f4f8fb;
   --card-dark-ink: #10233b;
@@ -244,12 +246,13 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 /* ---------- The card ---------- */
 .card { position: relative; aspect-ratio: 1.586; max-width: 100%; border-radius: 16px; overflow: hidden; color: var(--card-light-ink); box-shadow: 0 24px 48px -18px rgba(5, 12, 22, .55), 0 2px 6px rgba(5, 12, 22, .2); transition: background .4s, transform .4s; container-type: inline-size; }
 .card.vertical { aspect-ratio: 1 / 1.586; }
-.card[data-color="polar"] { background: linear-gradient(135deg, var(--c-polar-a), var(--c-polar-b)); }
-.card[data-color="aurora"] { background: linear-gradient(135deg, var(--c-aurora-a), var(--c-aurora-b)); }
-.card[data-color="ember"] { background: linear-gradient(135deg, var(--c-ember-a), var(--c-ember-b)); }
-.card[data-color="frost"] { background: linear-gradient(135deg, var(--c-frost-a), var(--c-frost-b)); color: var(--card-dark-ink); }
-.card[data-color="obsidian"] { background: linear-gradient(135deg, var(--c-obsidian-a), var(--c-obsidian-b)); }
-.card[data-color="borealis"] { background: radial-gradient(110% 75% at 18% 0%, color-mix(in srgb, var(--c-bor-green) 70%, transparent), transparent 60%), radial-gradient(80% 70% at 88% 8%, color-mix(in srgb, var(--c-bor-violet) 75%, transparent), transparent 62%), radial-gradient(70% 50% at 55% 30%, color-mix(in srgb, var(--c-bor-teal) 45%, transparent), transparent 70%), linear-gradient(170deg, var(--c-bor-night-b), var(--c-bor-night-a) 75%); }
+.card { background: var(--card-bg); }
+.card[data-color="polar"] { --card-bg: linear-gradient(135deg, var(--c-polar-a), var(--c-polar-b)); }
+.card[data-color="aurora"] { --card-bg: linear-gradient(135deg, var(--c-aurora-a), var(--c-aurora-b)); }
+.card[data-color="ember"] { --card-bg: linear-gradient(135deg, var(--c-ember-a), var(--c-ember-b)); }
+.card[data-color="frost"] { --card-bg: linear-gradient(135deg, var(--c-frost-a), var(--c-frost-b)); color: var(--card-dark-ink); }
+.card[data-color="obsidian"] { --card-bg: linear-gradient(135deg, var(--c-obsidian-a), var(--c-obsidian-b)); }
+.card[data-color="borealis"] { --card-bg: radial-gradient(110% 75% at 18% 0%, color-mix(in srgb, var(--c-bor-green) 70%, transparent), transparent 60%), radial-gradient(80% 70% at 88% 8%, color-mix(in srgb, var(--c-bor-violet) 75%, transparent), transparent 62%), radial-gradient(70% 50% at 55% 30%, color-mix(in srgb, var(--c-bor-teal) 45%, transparent), transparent 70%), linear-gradient(170deg, var(--c-bor-night-b), var(--c-bor-night-a) 75%); }
 /* slow-moving light curtain so the Aurora card shimmers like the real thing */
 .card[data-color="borealis"]::before { content: ""; position: absolute; inset: -30%; background: linear-gradient(100deg, transparent 28%, color-mix(in srgb, var(--c-bor-green) 50%, transparent) 40%, transparent 50%, color-mix(in srgb, var(--c-bor-violet) 40%, transparent) 60%, transparent 72%); filter: blur(14px); animation: aurora 9s ease-in-out infinite alternate; pointer-events: none; }
 @keyframes aurora { from { transform: translateX(-14%) skewX(-14deg); } to { transform: translateX(14%) skewX(10deg); } }
@@ -257,8 +260,15 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 .card[data-color="frost"] .pat { opacity: .28; }
 .card .sheen { position: absolute; inset: 0; pointer-events: none; }
 .card[data-finish="gloss"] .sheen { background: linear-gradient(115deg, transparent 30%, rgba(255,255,255,.28) 45%, transparent 60%); }
-.card[data-finish="metal"] .sheen { background: repeating-linear-gradient(90deg, rgba(255,255,255,.05) 0 1px, transparent 1px 3px), linear-gradient(120deg, rgba(255,255,255,.18), transparent 40%, rgba(255,255,255,.12) 70%, transparent); }
 .card[data-finish="matte"] .sheen { background: radial-gradient(circle at 30% 20%, rgba(255,255,255,.08), transparent 60%); }
+/* Materials. Steel: brushed lines and a bright edge over the chosen colour. Birch: wood grain, lightly stained with the chosen colour, pattern engraved in dark ink. */
+.card .tint { display: none; position: absolute; inset: 0; pointer-events: none; }
+.card[data-material="steel"] { box-shadow: inset 0 0 0 1px rgba(255,255,255,.28), 0 24px 48px -18px rgba(5, 12, 22, .6), 0 2px 6px rgba(5, 12, 22, .25); }
+.card[data-material="steel"] .sheen::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, rgba(255,255,255,.07) 0 1px, transparent 1px 3px), linear-gradient(120deg, rgba(255,255,255,.24), transparent 38%, rgba(255,255,255,.16) 68%, transparent); }
+.card[data-material="birch"] { background: var(--birch-grain), linear-gradient(135deg, var(--c-birch-a), var(--c-birch-b)); color: var(--card-dark-ink); }
+.card[data-material="birch"]::before { display: none; }
+.card[data-material="birch"] .tint { display: block; background: var(--card-bg); mix-blend-mode: multiply; opacity: .3; }
+.card[data-material="birch"] .pat { opacity: .4; }
 .card .inner { position: absolute; inset: 0; padding: 7cqw; display: flex; flex-direction: column; justify-content: space-between; }
 .card .row1 { display: flex; justify-content: space-between; align-items: flex-start; }
 .card .mark { display: flex; align-items: center; gap: 2cqw; font-family: var(--f-display); font-weight: 800; font-size: 6.5cqw; letter-spacing: -0.03em; }
@@ -423,6 +433,11 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
       <div class="mobile-card hide-wide" data-preview></div>
       <div class="field"><span>Colour · <b class="pick-name" id="colorName">Aurora</b></span><div class="swatches" id="colorOpts"></div></div>
       <div class="field"><span>Pattern</span><div class="seg" id="patternOpts"></div></div>
+      <div class="field">
+        <span>Material</span>
+        <div class="seg" id="materialOpts"></div>
+        <p class="hint">Steel and birch have a one-off fee, charged once when your card is made.</p>
+      </div>
       <div class="field"><span>Finish</span><div class="seg" id="finishOpts"></div></div>
       <div class="field"><span>Orientation</span><div class="seg" id="orientOpts"></div></div>
       <div class="field">
@@ -494,12 +509,14 @@ const swatchBG = id => id === 'borealis'
   ? 'radial-gradient(90% 80% at 20% 10%, var(--c-bor-green), transparent 65%), radial-gradient(80% 80% at 90% 10%, var(--c-bor-violet), transparent 65%), var(--c-bor-night-a)'
   : `linear-gradient(135deg, var(--c-${id}-a), var(--c-${id}-b))`;
 const PATTERNS = [{ id: 'fjord', name: 'Fjord peaks' }, { id: 'curtains', name: 'Aurora curtains' }, { id: 'polaris', name: 'Polaris' }, { id: 'globe', name: 'Top of the world' }, { id: 'none', name: 'Clean' }];
-const FINISHES = [{ id: 'matte', name: 'Matte' }, { id: 'gloss', name: 'Gloss' }, { id: 'metal', name: 'Brushed metal' }];
+const FINISHES = [{ id: 'matte', name: 'Matte' }, { id: 'gloss', name: 'Gloss' }];
+const MATERIALS = [{ id: 'plastic', name: 'Recycled plastic', fee: 0 }, { id: 'steel', name: 'Brushed steel', fee: 49 }, { id: 'birch', name: 'Birch wood', fee: 25 }];
+const material = () => MATERIALS.find(m => m.id === state.material);
 const ORIENT = [{ id: 'h', name: 'Landscape' }, { id: 'v', name: 'Portrait' }];
 const EMP = [{ id: 'employed', name: 'Employed' }, { id: 'self', name: 'Self-employed' }, { id: 'student', name: 'Student' }, { id: 'retired', name: 'Retired' }, { id: 'other', name: 'Not working right now' }];
 const YN = [{ id: 'yes', name: 'Yes' }, { id: 'no', name: 'No' }];
 
-const state = { step: 0, q: 0, goal: null, adult: null, uk: null, emp: null, income: 32000, housing: 850, ccj: null, perks: [], spend: 1200, color: 'borealis', pattern: 'fjord', finish: 'matte', orient: 'h', name: 'Alex Morgan' };
+const state = { step: 0, q: 0, goal: null, adult: null, uk: null, emp: null, income: 32000, housing: 850, ccj: null, perks: [], spend: 1200, color: 'borealis', pattern: 'fjord', finish: 'matte', material: 'plastic', orient: 'h', name: 'Alex Morgan' };
 
 const $ = s => document.querySelector(s);
 const gbp = n => '£' + Math.round(n).toLocaleString('en-GB');
@@ -542,8 +559,8 @@ function tierName() {
 
 function cardHTML() {
   const name = (state.name.trim() || 'Your name').toUpperCase();
-  return `<div class="card ${state.orient === 'v' ? 'vertical' : ''}" data-color="${state.color}" data-finish="${state.finish}" role="img" aria-label="North ${tierName()} card, ${COLORS.find(c => c.id === state.color).name}, ${state.finish} finish">
-    ${PATTERN_SVG[state.pattern]}<div class="sheen"></div>
+  return `<div class="card ${state.orient === 'v' ? 'vertical' : ''}" data-color="${state.color}" data-finish="${state.finish}" data-material="${state.material}" role="img" aria-label="North ${tierName()} card, ${material().name.toLowerCase()}, ${COLORS.find(c => c.id === state.color).name}, ${state.finish} finish">
+    <div class="tint"></div>${PATTERN_SVG[state.pattern]}<div class="sheen"></div>
     <div class="inner">
       <div class="row1">
         <span class="mark"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="14" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M16 5 L20 16 L16 14 L12 16 Z" fill="currentColor"/><path d="M16 27 L12 16 L16 18 L20 16 Z" fill="currentColor" opacity=".45"/></svg>North</span>
@@ -645,6 +662,7 @@ function renderDesign() {
     state.color = b.dataset.v; renderDesign(); renderPreviews();
   };
   segment($('#patternOpts'), PATTERNS, 'pattern');
+  segment($('#materialOpts'), MATERIALS.map(m => ({ id: m.id, name: `${m.name} · ${m.fee ? gbp(m.fee) : 'Free'}` })), 'material');
   segment($('#finishOpts'), FINISHES, 'finish');
   segment($('#orientOpts'), ORIENT, 'orient');
 }
@@ -675,9 +693,11 @@ function summaryRows() {
   return [
     ['Card', `North ${tierName()}`],
     ['Perks', t.sel.map(p => p.name).join(', ')],
-    ['Design', `${COLORS.find(c => c.id === state.color).name}, ${PATTERNS.find(p => p.id === state.pattern).name.toLowerCase()}, ${state.finish === 'metal' ? 'brushed metal' : state.finish}`],
+    ['Design', `${COLORS.find(c => c.id === state.color).name}, ${PATTERNS.find(p => p.id === state.pattern).name.toLowerCase()}, ${state.finish}`],
+    ['Material', material().name],
     ['Credit limit', `Up to ${gbp(o.limit)}`],
     ['Monthly fee', t.fee ? gbp(t.fee) : '£0'],
+    ['One-off card fee', material().fee ? gbp(material().fee) : '£0'],
     ['Representative APR', `${o.apr}% (variable)`]
   ].map(([k, v]) => `<div><span>${k}</span><span>${v}</span></div>`).join('');
 }
@@ -754,7 +774,7 @@ function renderDone() {
   const o = offer(); const t = totals();
   $('#wallet').innerHTML = cardHTML() + '<div class="pocket"><span>Wallet<br><small>Ready for contactless</small></span><span>✓</span></div>';
   $('#doneSummary').innerHTML = [
-    ['Card', `North ${tierName()} •••• 4821`], ['Credit limit', gbp(o.limit)], ['Estimated value / yr', gbp(Math.max(t.net, 0))]
+    ['Card', `North ${tierName()} •••• 4821`], ['Material', material().name], ['Credit limit', gbp(o.limit)], ['Estimated value / yr', gbp(Math.max(t.net, 0))]
   ].map(([k, v]) => `<div><span>${k}</span><span>${v}</span></div>`).join('');
 }
 
