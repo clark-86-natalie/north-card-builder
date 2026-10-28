@@ -15,7 +15,9 @@ Built for a work hackathon. North is not a real bank, and every rate, limit, fee
 
 ## Product requirements
 
-The full PRD lives in [`docs/PRD.md`](docs/PRD.md).
+The full PRD lives in [`docs/PRD.md`](docs/PRD.md). It's also published on the site as [`prd.html`](prd.html), linked from the landing page.
+
+After editing the Markdown, regenerate the page with `python3 tools/build_prd.py .` (needs `pip install markdown`).
 
 ## Run it
 

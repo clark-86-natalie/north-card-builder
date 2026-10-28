@@ -1,0 +1,665 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>North PRD</title>
+<!-- Generated from docs/PRD.md. Edit the Markdown, then regenerate this page. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+:root {
+  --bg: #eef3f6; --surface: #ffffff; --surface-2: #e3ebf0; --ink: #0d1b2e; --ink-2: #4a5b70;
+  --line: #cfdbe3; --accent: #0f9e8a; --accent-ink: #ffffff; --accent-soft: #d5f1ec;
+  --studio: #0d1b2e; --studio-ink: #e9f2f6; --studio-ink-2: #93a7bb; --aurora: #39c9a0;
+  --f-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", sans-serif;
+  --f-body: "Figtree", "Helvetica Neue", Arial, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  --r: 14px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #08121f; --surface: #102036; --surface-2: #172b45; --ink: #e9f2f6; --ink-2: #93a7bb;
+    --line: #23395a; --accent: #3fd2b4; --accent-ink: #062018; --accent-soft: #123d3f; --studio: #050c16;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #08121f; --surface: #102036; --surface-2: #172b45; --ink: #e9f2f6; --ink-2: #93a7bb;
+  --line: #23395a; --accent: #3fd2b4; --accent-ink: #062018; --accent-soft: #123d3f; --studio: #050c16;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+a { color: var(--accent); }
+
+.topbar { position: sticky; top: 0; z-index: 5; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+.topbar-in { max-width: 1120px; margin: 0 auto; padding: 12px max(16px, env(safe-area-inset-right, 0px)) 12px max(16px, env(safe-area-inset-left, 0px)); display: flex; align-items: center; gap: 12px; }
+.brand { display: flex; align-items: center; gap: 8px; font-family: var(--f-display); font-weight: 800; font-size: 20px; letter-spacing: -0.03em; color: var(--ink); text-decoration: none; }
+.brand svg { width: 26px; height: 26px; }
+.tag { font-size: 11px; text-transform: uppercase; letter-spacing: .1em; color: var(--ink-2); border: 1px solid var(--line); border-radius: 99px; padding: 3px 9px; }
+.btn { margin-left: auto; border-radius: 99px; padding: 9px 16px; font-weight: 700; font-size: 14px; background: var(--accent); color: var(--accent-ink); text-decoration: none; white-space: nowrap; }
+
+.hero { background: var(--studio); color: var(--studio-ink); position: relative; overflow: hidden; }
+.hero::before { content: ""; position: absolute; inset: -40% -10% auto auto; width: 560px; height: 560px; border-radius: 50%; background: radial-gradient(circle, color-mix(in srgb, var(--aurora) 30%, transparent), transparent 65%); pointer-events: none; }
+.hero-in { position: relative; max-width: 1120px; margin: 0 auto; padding: 48px 16px 40px; }
+.eyebrow { font-size: 12px; text-transform: uppercase; letter-spacing: .12em; font-weight: 700; color: var(--studio-ink-2); }
+.hero h1 { font-family: var(--f-display); font-size: clamp(34px, 7vw, 56px); line-height: 1.02; letter-spacing: -0.03em; margin: 8px 0 12px; font-weight: 800; }
+.hero p { margin: 0; color: var(--studio-ink-2); max-width: 56ch; }
+
+.layout { max-width: 1120px; margin: 0 auto; padding: 32px 16px 64px; display: grid; gap: 32px; }
+@media (min-width: 960px) { .layout { grid-template-columns: 240px minmax(0, 1fr); gap: 48px; } }
+nav.toc { align-self: start; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; }
+@media (min-width: 960px) { nav.toc { position: sticky; top: 84px; max-height: calc(100vh - 100px); overflow: auto; } }
+nav.toc summary { cursor: pointer; font-weight: 700; display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .1em; color: var(--ink-2); margin-bottom: 8px; }
+nav.toc ol { margin: 0; padding: 0; list-style: none; display: grid; gap: 2px; }
+nav.toc a { display: block; padding: 5px 8px; border-radius: 8px; color: var(--ink); text-decoration: none; font-size: 14px; line-height: 1.35; }
+nav.toc a:hover { background: var(--surface-2); }
+
+article { min-width: 0; max-width: 760px; }
+article h2 { font-family: var(--f-display); font-size: 28px; line-height: 1.15; letter-spacing: -0.02em; margin: 48px 0 12px; padding-top: 24px; border-top: 1px solid var(--line); }
+article h2:first-of-type { margin-top: 32px; }
+article h3 { font-family: var(--f-display); font-size: 20px; letter-spacing: -0.01em; margin: 28px 0 8px; }
+article h4 { font-size: 12px; text-transform: uppercase; letter-spacing: .1em; color: var(--ink-2); margin: 20px 0 6px; }
+article p, article li { max-width: 68ch; }
+article ul, article ol { padding-left: 22px; }
+article li { margin: 4px 0; }
+article code { font-family: var(--f-mono); font-size: .86em; background: var(--surface-2); padding: 1px 6px; border-radius: 6px; }
+article blockquote { margin: 20px 0; padding: 14px 16px; background: color-mix(in srgb, var(--accent-soft) 55%, var(--surface)); border: 1px solid var(--accent); border-radius: var(--r); }
+article blockquote p { margin: 0; }
+.meta { list-style: none; padding: 0 !important; margin: 0 0 8px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; }
+.meta li { margin: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; font-size: 14px; }
+.meta li strong { margin-bottom: 2px; display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .1em; color: var(--ink-2); }
+.table-wrap { overflow-x: auto; margin: 12px 0; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); }
+table { border-collapse: collapse; width: 100%; min-width: 600px; font-size: 14px; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-2); background: var(--surface-2); }
+tr:last-child td { border-bottom: 0; }
+li.done, li.todo { list-style: none; margin-left: -22px; display: grid; grid-template-columns: 22px 1fr; gap: 10px; align-items: start; }
+.box { width: 22px; height: 22px; margin-top: 2px; border-radius: 7px; border: 2px solid var(--line); display: grid; place-items: center; font-size: 12px; font-weight: 800; }
+li.done .box { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+footer { border-top: 1px solid var(--line); color: var(--ink-2); font-size: 13px; text-align: center; padding: 24px 16px 40px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+  <a class="brand" href="index.html"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="14" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 5 L20 16 L16 14 L12 16 Z" fill="var(--accent)"/><path d="M16 27 L12 16 L16 18 L20 16 Z" fill="currentColor" opacity=".45"/></svg>North</a>
+  <span class="tag">PRD</span>
+  <a class="btn" href="index.html">Open the prototype</a>
+</div></header>
+
+<section class="hero"><div class="hero-in">
+  <span class="eyebrow">Product requirements document</span>
+  <h1>North Card Builder</h1>
+  <p>A credit card built around how you live. What the hackathon prototype does, how it works, and what's still to build.</p>
+</div></section>
+
+<div class="layout">
+  <nav class="toc" aria-label="Contents"><details id="tocBox"><summary>Contents</summary><ol><li><a href="#1-executive-summary">1. Executive summary</a></li><li><a href="#2-goals-and-success-criteria">2. Goals and success criteria</a></li><li><a href="#3-target-users">3. Target users</a></li><li><a href="#4-core-user-journey">4. Core user journey</a></li><li><a href="#5-functional-requirements">5. Functional requirements</a></li><li><a href="#6-user-interface-and-visual-design">6. User interface and visual design</a></li><li><a href="#7-non-functional-requirements">7. Non-functional requirements</a></li><li><a href="#8-technical-requirements">8. Technical requirements</a></li><li><a href="#9-out-of-scope">9. Out of scope</a></li><li><a href="#10-measurement-and-evaluation">10. Measurement and evaluation</a></li><li><a href="#11-delivery-status">11. Delivery status</a></li><li><a href="#12-acceptance-checklist">12. Acceptance checklist</a></li><li><a href="#13-three-minute-presentation-plan">13. Three-minute presentation plan</a></li><li><a href="#14-instructions-for-the-ai-development-assistant">14. Instructions for the AI development assistant</a></li><li><a href="#15-changes-from-version-10">15. Changes from version 1.0</a></li></ol></details></nav>
+  <script>if (matchMedia("(min-width: 960px)").matches) document.getElementById("tocBox").open = true;</script>
+  <article>
+
+<ul class="meta">
+<li><strong>Version</strong> 2.0 (updated to match the built prototype)</li>
+<li><strong>Status</strong> Hackathon MVP, built</li>
+<li><strong>Product</strong> Interactive credit card builder website</li>
+<li><strong>Brand</strong> North</li>
+<li><strong>Primary deliverable</strong> Working, responsive web prototype (<code>index.html</code>)</li>
+<li><strong>Deadline</strong> End of hackathon day</li>
+</ul>
+<blockquote>
+<p>Version 1.0 described a design-first "NORTH Card Studio". The prototype moved on from that during the build. It now starts with a short eligibility questionnaire, recommends perks, and ends in a simulated application. This version describes what is built. Section 15 lists the changes from 1.0 and the 1.0 items that aren't built yet.</p>
+</blockquote>
+
+<h2 id="1-executive-summary">1. Executive summary</h2>
+<h3 id="11-product-vision">1.1 Product vision</h3>
+<p>North is a fictional, app-first bank exploring a more personal approach to credit cards.</p>
+<p>North Card Builder is an interactive website where customers answer a few questions, get a simulated eligibility result, pick three perks that suit how they spend, design how their card looks, and finish with a card ready in their phone wallet.</p>
+<p>Customers build their own card from perks and design choices, rather than picking one fixed product from a range.</p>
+<p>The experience should feel engaging, quick and visually distinctive, combining the creativity of a design tool with the clarity of a modern fintech app.</p>
+<h3 id="12-headline">1.2 Headline</h3>
+<p>A credit card built around how you live.</p>
+<p>Supporting copy: "Pick the perks you'll actually use, design how it looks, and check your eligibility in about two minutes. Checking won't affect your credit score."</p>
+<h3 id="13-problem-statement">1.3 Problem statement</h3>
+<p>Traditional credit cards come as fixed packages. Customers have little control over the features or how the card looks, and often don't know whether they'll be accepted until they apply.</p>
+<p>This concept explores whether three things together make a card feel more personal and relevant: an upfront eligibility check, a choice of perks with their value shown in pounds, and a card designed by the customer.</p>
+<p>This is a product hypothesis to demonstrate, not a validated customer research finding.</p>
+<h3 id="14-proposed-solution">1.4 Proposed solution</h3>
+<p>North Card Builder gives customers five connected capabilities:</p>
+<ol>
+<li>Tell North what matters to them and check their eligibility with a simulated soft search.</li>
+<li>Choose exactly three perks, with an estimate of what those perks are worth each year after fees.</li>
+<li>Design the card's colour, pattern, material, finish, orientation and name.</li>
+<li>Review the card, credit limit, fees and representative APR, then apply.</li>
+<li>See the finished card drop into a phone wallet.</li>
+</ol>
+<p>A "Surprise me" button on the design step generates a random new look.</p>
+
+<h2 id="2-goals-and-success-criteria">2. Goals and success criteria</h2>
+<h3 id="21-product-goals">2.1 Product goals</h3>
+<ul>
+<li>Demonstrate a customer-led credit card building experience.</li>
+<li>Show eligibility before the customer commits, without a credit score impact (simulated).</li>
+<li>Make the value of each perk concrete in pounds per year.</li>
+<li>Give immediate visual feedback on every design choice.</li>
+<li>Create a cohesive, premium, app-first fintech brand experience.</li>
+<li>Demonstrate how AI-assisted development can bring a product concept to life quickly.</li>
+<li>Deliver an end-to-end journey that can be presented in three minutes.</li>
+</ul>
+<h3 id="22-hackathon-success-criteria">2.2 Hackathon success criteria</h3>
+<p>The prototype is successful when:</p>
+<ul>
+<li>A user can complete the main journey without assistance.</li>
+<li>Each question needs an answer before the user can continue.</li>
+<li>The perk picker enforces exactly three perks and updates the estimated value as perks and spend change.</li>
+<li>Design changes update the live card preview immediately.</li>
+<li>The review and final screens match the user's choices.</li>
+<li>The user can go back through the steps without losing their choices.</li>
+<li>The website works at desktop and mobile viewport sizes, in light and dark mode.</li>
+<li>No core interaction depends on a real banking integration.</li>
+</ul>
+
+<h2 id="3-target-users">3. Target users</h2>
+<p>The prototype is designed around four illustrative user types. They map directly to the four answers to "What matters most to you in a credit card?".</p>
+<h3 id="31-the-credit-builder">3.1 The credit builder</h3>
+<p>Getting a first card or making a fresh start. Wants help building a credit score.</p>
+<h3 id="32-the-everyday-spender">3.2 The everyday spender</h3>
+<p>Wants money back on groceries, bills and day-to-day spending.</p>
+<h3 id="33-the-frequent-traveller">3.3 The frequent traveller</h3>
+<p>Wants miles, airport lounges and cheaper spending abroad.</p>
+<h3 id="34-the-cost-spreader">3.4 The cost spreader</h3>
+<p>Has a big purchase coming up or wants to move a balance, and values 0% periods.</p>
+<p>These personas represent potential use cases, not researched or validated customer segments.</p>
+
+<h2 id="4-core-user-journey">4. Core user journey</h2>
+<p>Landing → Let's get to know you (6 questions) → Building your card (eligibility result) → Pick your three perks → Make it yours (design) → Check and apply → Your North card is ready</p>
+<p>The four main steps (About you, Perks, Design, Review) are shown in a progress bar with a label such as "Step 2 of 4 · Perks".</p>
+<p>Users can go back with the Back button at any step, including question by question within "About you". All answers, perks and design choices are kept.</p>
+
+<h2 id="5-functional-requirements">5. Functional requirements</h2>
+<h3 id="51-landing-page">5.1 Landing page</h3>
+<p>Purpose: Introduce North and get customers started.</p>
+<h4 id="requirements">Requirements</h4>
+<ul>
+<li>North logo (a compass-style mark) and wordmark in the top bar, with a "Prototype" tag.</li>
+<li>Headline: "A credit card built around how you live."</li>
+<li>Supporting copy about perks, design and a two-minute eligibility check.</li>
+<li>A live example card.</li>
+<li>Three key points:</li>
+<li><strong>Choose 3 perks</strong>: cashback, travel, 0% offers or credit building. Swap them every 90 days in the app.</li>
+<li><strong>Design it yourself</strong>: colour, pattern, finish and how your name appears.</li>
+<li><strong>No annual fee</strong>: only premium travel perks carry a small monthly fee, shown upfront.</li>
+<li>Primary CTA: "Start building".</li>
+<li>Footnote: "North is a fictional bank. This is a hackathon prototype."</li>
+</ul>
+<h4 id="acceptance-criteria">Acceptance criteria</h4>
+<ul>
+<li>"Start building" opens the first question.</li>
+<li>No login or registration is required.</li>
+</ul>
+<h3 id="52-lets-get-to-know-you">5.2 Let's get to know you</h3>
+<p>Purpose: Understand what the customer wants and simulate an eligibility check.</p>
+<p>Questions are shown one at a time, with a "Question X of 6" counter and a thin progress track. The Continue button stays disabled until the current question is answered. On the last question it reads "Build my card".</p>
+<h4 id="questions">Questions</h4>
+<ol>
+<li><strong>What matters most to you in a credit card?</strong> One choice, with an icon and short description:
+   - Build my credit score: my first card, or a fresh start.
+   - Get money back on everyday spending: groceries, bills, the usual.
+   - Earn travel rewards: miles, lounges, spending abroad.
+   - Spread the cost of something: a big purchase or moving a balance.</li>
+<li><strong>A couple of quick checks.</strong> "Are you 18 or over?" and "Do you live in the UK?" (Yes/No). Both must be Yes to continue. A No shows: "You need to be 18 or over and live in the UK to get a North card."</li>
+<li><strong>What's your employment status?</strong> Employed, Self-employed, Student, Retired, or Not working right now.</li>
+<li><strong>What's your yearly income before tax?</strong> Slider from £0 to £150,000 in £1,000 steps, default £32,000.</li>
+<li><strong>How much do you pay for rent or mortgage each month?</strong> Slider from £0 to £3,000 in £25 steps, default £850.</li>
+<li><strong>In the last 6 years, have you had a CCJ, bankruptcy or IVA?</strong> Yes/No, with an explanation of what a CCJ is and a note that answering yes doesn't stop you applying.</li>
+</ol>
+<p>Footnote throughout: "None of this affects your credit score."</p>
+<h4 id="acceptance-criteria_1">Acceptance criteria</h4>
+<ul>
+<li>Choosing a goal preselects three recommended perks for that goal. Changing the goal replaces them with the new goal's recommendations.</li>
+<li>Users cannot continue past the eligibility checks unless both answers are Yes.</li>
+<li>Back moves to the previous question.</li>
+</ul>
+<h3 id="53-building-your-card-holding-screen">5.3 Building your card (holding screen)</h3>
+<p>Purpose: Make the simulated soft search feel real and reveal the result.</p>
+<h4 id="requirements_1">Requirements</h4>
+<ul>
+<li>Title "Building your card…" with a spinner.</li>
+<li>Three steps tick off one after another, about 0.9 seconds each:
+  1. Checking your eligibility with a soft search.
+  2. Matching perks to what matters to you.
+  3. Working out your credit limit.</li>
+<li>The title then changes to "Good news" and a result panel shows:</li>
+<li>"Likely to be approved".</li>
+<li>"Credit limit up to £X".</li>
+<li>The representative APR and a sentence confirming three perks have been picked to match the customer's goal.</li>
+<li>CTA: "See my perks".</li>
+</ul>
+<h4 id="illustrative-offer-logic">Illustrative offer logic</h4>
+<p>All values are fictional.</p>
+<ul>
+<li>Credit limit starts at a share of income set by employment status: employed 22%, self-employed 18%, retired 15%, student 8%, not working 6%. It is capped at £15,000.</li>
+<li>If yearly housing costs are more than 40% of income, the limit is reduced by 40%.</li>
+<li>Credit builders are capped at £1,200.</li>
+<li>A CCJ, bankruptcy or IVA caps the limit at £500.</li>
+<li>The limit is rounded to the nearest £50, with a minimum of £250.</li>
+<li>Representative APR (variable): 34.9% with a CCJ, bankruptcy or IVA; 29.9% for credit builders and students; otherwise 24.9%.</li>
+</ul>
+<h3 id="54-pick-your-three-perks">5.4 Pick your three perks</h3>
+<p>Purpose: Let customers choose the perks that matter to them and see what they're worth.</p>
+<h4 id="requirements_2">Requirements</h4>
+<ul>
+<li>A "Recommended for you" panel with three slot indicators that fill as perks are picked, and the customer's representative APR.</li>
+<li>A slider: "How much do you put on a card each month?" from £200 to £5,000 in £100 steps, default £1,200.</li>
+<li>A dark "What your perks could earn you" panel showing an estimated value per year after monthly fees, with a line-by-line breakdown. It updates live as perks or spend change.</li>
+<li>Perks shown in groups as selectable tiles, with "Recommended" and monthly fee badges where relevant.</li>
+<li>Exactly three perks must be picked. Once three are selected, the other tiles fade and shake if tapped. Tapping a selected perk removes it.</li>
+<li>The CTA reads "Pick N more" until three are picked, then "Design my card".</li>
+</ul>
+<h4 id="perks">Perks</h4>
+<p>All rates, fees and values are fictional and illustrative.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Group</th>
+<th>Perk</th>
+<th>Detail</th>
+<th>Estimated value / fee</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cashback</td>
+<td>1% cashback on everything</td>
+<td>Paid into your account every month</td>
+<td>1% of yearly spend</td>
+</tr>
+<tr>
+<td>Cashback</td>
+<td>3% back at supermarkets</td>
+<td>Based on about a quarter of your spend</td>
+<td>3% of 25% of yearly spend</td>
+</tr>
+<tr>
+<td>Cashback</td>
+<td>Round-ups to savings</td>
+<td>Spare change moves to a 4.1% AER pot</td>
+<td>Shown as "Builds savings"</td>
+</tr>
+<tr>
+<td>Travel</td>
+<td>North Miles</td>
+<td>1 mile per £1, 3 per £1 on flights and hotels</td>
+<td>About 1.2% of yearly spend</td>
+</tr>
+<tr>
+<td>Travel</td>
+<td>No foreign transaction fees</td>
+<td>Saves 2.99% on spending abroad</td>
+<td>2.99% of 8% of yearly spend</td>
+</tr>
+<tr>
+<td>Travel</td>
+<td>4 airport lounge passes a year</td>
+<td>Over 1,300 lounges worldwide</td>
+<td>£128 a year, £4/month fee</td>
+</tr>
+<tr>
+<td>Travel</td>
+<td>Worldwide travel insurance</td>
+<td>Includes winter sports and gadgets</td>
+<td>£95 a year, £3/month fee</td>
+</tr>
+<tr>
+<td>Spread the cost</td>
+<td>0% on purchases for 12 months</td>
+<td>Then the standard rate applies</td>
+<td>Shown as "0% for 12 mo"</td>
+</tr>
+<tr>
+<td>Spread the cost</td>
+<td>0% on balance transfers for 18 months</td>
+<td>3% transfer fee</td>
+<td>Shown as "0% for 18 mo"</td>
+</tr>
+<tr>
+<td>Credit building</td>
+<td>Credit Builder</td>
+<td>Monthly score updates and a limit review every 6 months</td>
+<td>Shown as "Included"</td>
+</tr>
+</tbody>
+</table></div>
+<h4 id="recommended-perks-by-goal">Recommended perks by goal</h4>
+<ul>
+<li>Build my credit score: Credit Builder, Round-ups to savings, 1% cashback.</li>
+<li>Everyday spending: 1% cashback, 3% back at supermarkets, Round-ups to savings.</li>
+<li>Travel rewards: North Miles, No foreign transaction fees, Lounge passes.</li>
+<li>Spread the cost: 0% on purchases, 0% on balance transfers, Credit Builder.</li>
+</ul>
+<h4 id="card-tier">Card tier</h4>
+<p>The card is given a tier name from the chosen perks, shown on the card and in the summaries:</p>
+<ul>
+<li><strong>Explorer</strong>: lounge passes or travel insurance.</li>
+<li><strong>Foundation</strong>: Credit Builder.</li>
+<li><strong>Voyager</strong>: North Miles or no foreign transaction fees.</li>
+<li><strong>Flex</strong>: either 0% offer.</li>
+<li><strong>Everyday</strong>: anything else.</li>
+</ul>
+<h4 id="acceptance-criteria_2">Acceptance criteria</h4>
+<ul>
+<li>Users can select and deselect perks, up to a maximum of three.</li>
+<li>The estimated value and fee figures match the selected perks and spend.</li>
+<li>Selected perks are kept when navigating between steps.</li>
+<li>The interface does not imply that choosing a perk guarantees approval.</li>
+</ul>
+<h3 id="55-make-it-yours-design">5.5 Make it yours (design)</h3>
+<p>Purpose: Let customers personalise how their card looks.</p>
+<h4 id="requirements_3">Requirements</h4>
+<p>Users can choose:</p>
+<ul>
+<li><strong>Colour</strong> (7): Aurora (default), Aurora Bright, Polar Night, Fjord, Midnight Sun, Glacier White, Arctic Basalt. Aurora and Aurora Bright have a slow-moving shimmer, like the northern lights. The chosen colour's name is shown beside the label.</li>
+<li><strong>Pattern</strong> (6): Fjord peaks (default), Boreal forest, Aurora curtains, Polaris (the Plough pointing to the North Star), Top of the world, Clean.</li>
+<li><strong>Material</strong> (3): Recycled plastic (free, default), Brushed steel (£49 one-off), Birch wood (£25 one-off). A hint explains that steel and birch are charged once when the card is made. Birch shows wood grain lightly tinted with the chosen colour.</li>
+<li><strong>Finish</strong> (2): Matte (default), Gloss.</li>
+<li><strong>Orientation</strong> (2): Landscape (default), Portrait.</li>
+<li><strong>Name on card</strong>: text field, up to 24 characters, default "Alex Morgan", shown in capitals.</li>
+</ul>
+<p><strong>Surprise me</strong> (button beside the heading) picks a random colour, pattern (never Clean) and finish, each different from the current one. It picks portrait about a quarter of the time, and the card flips in with a short animation.</p>
+<p>CTA: "Looks good".</p>
+<h4 id="live-card-preview">Live card preview</h4>
+<p>The card preview:</p>
+<ul>
+<li>Has a realistic payment card shape (1.586 ratio), rotating for portrait.</li>
+<li>Shows the North logo, the tier name, a chip, a contactless symbol, a fictional masked number (•••• 4821), the name on the card and a network mark.</li>
+<li>Updates immediately when any design choice or the name changes.</li>
+<li>Uses gradients, sheen and shadows for depth. Steel adds brushed lines and a bright edge.</li>
+<li>Has an accessible label describing the tier, material, colour and finish.</li>
+</ul>
+<p>All payment card details are fictional.</p>
+<h4 id="acceptance-criteria_3">Acceptance criteria</h4>
+<ul>
+<li>Every design control visibly updates the preview immediately.</li>
+<li>An empty name shows "YOUR NAME". Long names are capped at 24 characters and truncate with an ellipsis if they don't fit.</li>
+<li>Design choices are kept when navigating between steps.</li>
+</ul>
+<h3 id="56-check-and-apply-review">5.6 Check and apply (review)</h3>
+<p>Purpose: Show everything in one place before the customer applies.</p>
+<h4 id="requirements_4">Requirements</h4>
+<ul>
+<li>The card preview.</li>
+<li>A summary listing: Card (North + tier), Perks, Design (colour, pattern, finish), Material, Credit limit ("Up to £X"), Monthly fee, One-off card fee, and Representative APR.</li>
+<li>A representative example: "assumed credit limit of £1,200. Purchase rate X% p.a. (variable). X% APR representative (variable)."</li>
+<li>CTA: "Apply and get my card".</li>
+<li>Footnote: "Applying runs a full credit check. All figures are illustrative." (No real check is run.)</li>
+</ul>
+<h4 id="acceptance-criteria_4">Acceptance criteria</h4>
+<ul>
+<li>All summary details match the user's choices.</li>
+<li>Back returns to the design step with everything kept.</li>
+</ul>
+<h3 id="57-your-north-card-is-ready-final-reveal">5.7 Your North card is ready (final reveal)</h3>
+<p>Purpose: Give users a satisfying conclusion.</p>
+<h4 id="requirements_5">Requirements</h4>
+<ul>
+<li>A wallet animation: the finished card drops into a phone wallet marked "Ready for contactless". This is a visual simulation only.</li>
+<li>A summary: Card (tier and masked number), Material, Credit limit, and Estimated value per year.</li>
+<li>Next steps:
+  1. Use it now. Your card is in your phone wallet and the North app.
+  2. Your physical card arrives in 3 to 5 working days.
+  3. Swap a perk any time after 90 days from the Card tab.</li>
+<li>"Build another card" button.</li>
+</ul>
+<h4 id="acceptance-criteria_5">Acceptance criteria</h4>
+<ul>
+<li>All displayed details match the user's choices.</li>
+<li>"Build another card" returns to the landing page and clears the questionnaire answers and perks. Design choices and slider values are kept.</li>
+</ul>
+
+<h2 id="6-user-interface-and-visual-design">6. User interface and visual design</h2>
+<h3 id="61-brand-identity">6.1 Brand identity</h3>
+<ul>
+<li><strong>Brand:</strong> North</li>
+<li><strong>Product:</strong> North Card Builder</li>
+<li><strong>Headline:</strong> A credit card built around how you live.</li>
+<li><strong>Theme:</strong> the far north. Aurora, fjords, polar nights, glaciers, birch and the North Star run through the colour names, patterns and logo.</li>
+</ul>
+<h4 id="brand-personality">Brand personality</h4>
+<ul>
+<li>Confident.</li>
+<li>Modern.</li>
+<li>Considered.</li>
+<li>Customer-led.</li>
+<li>Premium without being intimidating.</li>
+</ul>
+<h3 id="62-visual-direction">6.2 Visual direction</h3>
+<p>A contemporary, app-first fintech look with a calm interface and expressive card designs.</p>
+<h4 id="core-palette">Core palette</h4>
+<ul>
+<li>Frost (#eef3f6) background and white surfaces in light mode.</li>
+<li>Polar navy (#0d1b2e) for text and the desktop studio panel.</li>
+<li>Aurora teal (#0f9e8a) as the brand accent for buttons, selection and progress.</li>
+<li>A full dark mode that follows the device setting, with deeper navy surfaces and a brighter teal.</li>
+<li>Card colours are separate from the interface and look the same in both themes.</li>
+</ul>
+<h4 id="typography">Typography</h4>
+<ul>
+<li>Bricolage Grotesque for headings and the wordmark.</li>
+<li>Figtree for body text.</li>
+<li>JetBrains Mono for the card number and name on card.</li>
+</ul>
+<h4 id="design-principles">Design principles</h4>
+<ol>
+<li>Visual first: the card preview is the focal point.</li>
+<li>Immediate feedback: every selection has an obvious visual result.</li>
+<li>Low cognitive load: one question per view, clear labels, short descriptions.</li>
+<li>Concrete value: perk value is shown in pounds, after fees.</li>
+<li>Accessible interaction: clear focus states, readable text and sufficient contrast.</li>
+<li>Responsive by default: designed app-first, with a richer desktop layout.</li>
+</ol>
+<h3 id="63-layout">6.3 Layout</h3>
+<p>On mobile and narrow screens:</p>
+<ul>
+<li>One phone-width column of steps (up to 520px).</li>
+<li>Top bar with Back button or logo, and a "Prototype" tag.</li>
+<li>Card preview shown within the relevant steps.</li>
+<li>Primary action in a sticky bar at the bottom.</li>
+</ul>
+<p>On desktop (960px and wider):</p>
+<ul>
+<li>The step column on the left.</li>
+<li>A sticky dark "studio" panel on the right labelled "Your card, live", showing the live card and three stats: Perks (X / 3), Est. value / yr, and Monthly fee.</li>
+<li>During "About you" the studio shows an empty dashed card outline, so the card's first appearance is saved for later.</li>
+</ul>
+
+<h2 id="7-non-functional-requirements">7. Non-functional requirements</h2>
+<h3 id="71-performance">7.1 Performance</h3>
+<ul>
+<li>A single static HTML file with inline CSS and JavaScript. The only external assets are Google Fonts.</li>
+<li>No frameworks or build step.</li>
+<li>Card art and patterns are inline SVG and CSS gradients, not images.</li>
+</ul>
+<h3 id="72-accessibility">7.2 Accessibility</h3>
+<ul>
+<li>Semantic HTML, with labels on the sliders and name field.</li>
+<li>All controls are buttons and keyboard accessible, using <code>aria-pressed</code> for selection.</li>
+<li>Visible focus outlines.</li>
+<li>Selection is shown with ticks, filled radios and borders as well as colour.</li>
+<li>The card preview has a descriptive accessible label. The perk value panel is announced politely when it changes.</li>
+<li>All animations and transitions are switched off when the user prefers reduced motion.</li>
+</ul>
+<h3 id="73-responsiveness">7.3 Responsiveness</h3>
+<ul>
+<li>Supports common desktop and mobile viewport sizes, including safe areas on notched phones.</li>
+<li>No horizontal scrolling.</li>
+</ul>
+<h3 id="74-reliability">7.4 Reliability</h3>
+<ul>
+<li>All primary buttons perform their stated actions.</li>
+<li>State is kept while navigating through the flow.</li>
+<li>Core functionality has no external dependencies.</li>
+<li>Sensible defaults let a user complete the journey quickly.</li>
+</ul>
+<h3 id="75-privacy-and-security">7.5 Privacy and security</h3>
+<ul>
+<li>Fictional data only.</li>
+<li>Nothing entered is stored or sent anywhere. All state is in memory and is lost on refresh.</li>
+<li>No real credit check, payment processing or application.</li>
+</ul>
+
+<h2 id="8-technical-requirements">8. Technical requirements</h2>
+<h3 id="81-implementation">8.1 Implementation</h3>
+<ul>
+<li>One file: <code>index.html</code>. Open it in a browser or serve it from any static host such as GitHub Pages.</li>
+<li>Vanilla HTML, CSS and JavaScript.</li>
+<li>Screens are <code>&lt;section&gt;</code> elements switched with a <code>go(n)</code> function. Screen 7 is the holding screen that sits inside step 1.</li>
+<li>Data is defined as constants: <code>GOALS</code>, <code>PERKS</code>, <code>COLORS</code>, <code>PATTERNS</code>, <code>MATERIALS</code>, <code>FINISHES</code>, <code>ORIENT</code>, <code>EMP</code>.</li>
+<li><code>cardHTML()</code> renders the card wherever it appears (landing, design, review, studio panel and wallet).</li>
+<li><code>offer()</code> works out the credit limit and APR. <code>totals()</code> works out perk value and fees. <code>tierName()</code> picks the tier.</li>
+</ul>
+<h3 id="82-application-state">8.2 Application state</h3>
+<p>A single <code>state</code> object holds:</p>
+<ul>
+<li>Navigation: <code>step</code>, <code>q</code> (current question).</li>
+<li>About you: <code>goal</code>, <code>adult</code>, <code>uk</code>, <code>emp</code>, <code>income</code>, <code>housing</code>, <code>ccj</code>.</li>
+<li>Perks: <code>perks</code> (up to three IDs), <code>spend</code>.</li>
+<li>Design: <code>color</code>, <code>pattern</code>, <code>material</code>, <code>finish</code>, <code>orient</code>, <code>name</code>.</li>
+</ul>
+<h3 id="83-persistence">8.3 Persistence</h3>
+<p>In-memory only. Refreshing the page starts again.</p>
+
+<h2 id="9-out-of-scope">9. Out of scope</h2>
+<p>The following are excluded from the hackathon MVP:</p>
+<ul>
+<li>Real bank accounts.</li>
+<li>Real credit applications, soft searches, credit checks or affordability assessments.</li>
+<li>Real eligibility decisions. The "Likely to be approved" result and credit limit are simulated.</li>
+<li>Actual payment processing.</li>
+<li>Real credit limits, APRs or financial advice.</li>
+<li>Actual Apple Pay or Google Wallet provisioning.</li>
+<li>Live cashback, miles or rewards transactions.</li>
+<li>Real customer authentication.</li>
+<li>Data storage of any kind.</li>
+<li>Integration with banking systems.</li>
+</ul>
+<p>Any fees, rates, limits, rewards or benefits displayed must be labelled as fictional or illustrative.</p>
+
+<h2 id="10-measurement-and-evaluation">10. Measurement and evaluation</h2>
+<p>As this is a hackathon prototype, success is assessed through demonstration and basic usability rather than commercial performance.</p>
+<h4 id="evaluation-criteria">Evaluation criteria</h4>
+<ul>
+<li><strong>Journey completion:</strong> can someone complete the flow without help?</li>
+<li><strong>Clarity:</strong> do users understand the questions, the eligibility result and the difference between perks?</li>
+<li><strong>Value:</strong> does the pounds-per-year estimate help users choose perks?</li>
+<li><strong>Customisation quality:</strong> does the preview respond correctly to every design choice?</li>
+<li><strong>Consistency:</strong> do the review and final screens match the choices made?</li>
+<li><strong>Visual quality:</strong> does the experience feel cohesive and presentation-ready?</li>
+<li><strong>Technical reliability:</strong> can the core flow be demonstrated without errors?</li>
+</ul>
+<p>If time allows, ask a colleague to complete the journey and observe where they hesitate.</p>
+
+<h2 id="11-delivery-status">11. Delivery status</h2>
+<h3 id="phase-1-foundation-done">Phase 1: Foundation (done)</h3>
+<ul>
+<li>Single-file static site, visual foundation, light and dark themes.</li>
+<li>Landing page and screen structure.</li>
+</ul>
+<h3 id="phase-2-core-functionality-done">Phase 2: Core functionality (done)</h3>
+<ul>
+<li>One-question-at-a-time "About you" flow with validation.</li>
+<li>Simulated soft search holding screen and offer logic.</li>
+<li>Perk picker with three-perk limit, recommendations, spend slider and live value.</li>
+<li>Card designer with live preview.</li>
+<li>Back navigation with state kept.</li>
+</ul>
+<h3 id="phase-3-completion-done">Phase 3: Completion (done)</h3>
+<ul>
+<li>Review screen with summary and representative example.</li>
+<li>Wallet reveal and "Build another card".</li>
+<li>Desktop studio panel.</li>
+</ul>
+<h3 id="phase-4-polish-done">Phase 4: Polish (done)</h3>
+<ul>
+<li>Aurora shimmer, card patterns, steel and birch materials.</li>
+<li>"Surprise me" on the design step.</li>
+<li>Reduced-motion support.</li>
+</ul>
+
+<h2 id="12-acceptance-checklist">12. Acceptance checklist</h2>
+<ul>
+<li class="done"><span class="box" aria-hidden="true">✓</span>North branding and headline are visible.</li>
+<li class="done"><span class="box" aria-hidden="true">✓</span>"Start building" opens the questionnaire.</li>
+<li class="done"><span class="box" aria-hidden="true">✓</span>Each question must be answered before continuing.</li>
+<li class="done"><span class="box" aria-hidden="true">✓</span>Under-18s and non-UK residents cannot continue.</li>
+<li class="done"><span class="box" aria-hidden="true">✓</span>The holding screen shows a simulated eligibility result, credit limit and APR.</li>
+<li class="done"><span class="box" aria-hidden="true">✓</span>Choosing a goal preselects three recommended perks.</li>
+<li class="done"><span class="box" aria-hidden="true">✓</span>Users must pick exactly three perks.</li>
+<li class="done"><span class="box" aria-hidden="true">✓</span>Estimated value updates with perks and spend, after fees.</li>
+<li class="done"><span class="box" aria-hidden="true">✓</span>Users can choose from seven card colours and six patterns.</li>
+<li class="done"><span class="box" aria-hidden="true">✓</span>Users can choose material, finish and orientation.</li>
+<li class="done"><span class="box" aria-hidden="true">✓</span>Users can personalise the name on the card.</li>
+<li class="done"><span class="box" aria-hidden="true">✓</span>The live preview updates immediately.</li>
+<li class="done"><span class="box" aria-hidden="true">✓</span>"Surprise me" generates a new design.</li>
+<li class="done"><span class="box" aria-hidden="true">✓</span>User choices persist throughout the journey.</li>
+<li class="done"><span class="box" aria-hidden="true">✓</span>The review and final screens show the correct details.</li>
+<li class="done"><span class="box" aria-hidden="true">✓</span>Users can go back and edit at any step.</li>
+<li class="done"><span class="box" aria-hidden="true">✓</span>Users can build another card.</li>
+<li class="done"><span class="box" aria-hidden="true">✓</span>The website is responsive and supports dark mode.</li>
+<li class="done"><span class="box" aria-hidden="true">✓</span>The demo works without a live banking integration.</li>
+</ul>
+
+<h2 id="13-three-minute-presentation-plan">13. Three-minute presentation plan</h2>
+<h3 id="000030-the-opportunity">0:00–0:30 | The opportunity</h3>
+<p>"Credit cards come as fixed packages, and you often don't know if you'll get one until you apply. North explores a different idea: what if you could check first, then build a card around how you live?"</p>
+<h3 id="030200-the-demonstration">0:30–2:00 | The demonstration</h3>
+<ul>
+<li>Start on the landing page.</li>
+<li>Pick a goal and run through the quick questions.</li>
+<li>Show the soft search result and credit limit.</li>
+<li>Swap a perk and move the spend slider to show the value change.</li>
+<li>Design the card: try Aurora, a pattern, brushed steel, and "Surprise me".</li>
+<li>Review the summary and apply.</li>
+<li>Finish on the card dropping into the wallet.</li>
+</ul>
+<h3 id="200300-the-bigger-picture">2:00–3:00 | The bigger picture</h3>
+<p>"This prototype brings together an upfront eligibility check, perks you choose with their value shown in pounds, and a card you design yourself. The longer-term opportunity is to make financial products feel more relevant and transparent without making them more complicated."</p>
+<p>Close with the finished card on screen.</p>
+
+<h2 id="14-instructions-for-the-ai-development-assistant">14. Instructions for the AI development assistant</h2>
+<p>Treat this PRD as the description of the current prototype.</p>
+<p>When making changes:</p>
+<ol>
+<li>Keep it a single static <code>index.html</code> with no build step.</li>
+<li>Add new options (colours, patterns, perks, materials) to the data constants so they flow through the card, summaries and studio panel.</li>
+<li>Keep every rate, fee and limit labelled as illustrative.</li>
+<li>Test the complete journey on desktop and mobile, in light and dark mode, after each change.</li>
+<li>Update this PRD and the README when the flow changes.</li>
+</ol>
+
+<h2 id="15-changes-from-version-10">15. Changes from version 1.0</h2>
+<h3 id="what-changed">What changed</h3>
+<ul>
+<li><strong>Name and headline:</strong> "NORTH Card Studio" with the tagline "Your money. Your rules. Your card." became "North Card Builder" with the headline "A credit card built around how you live."</li>
+<li><strong>Journey order:</strong> v1.0 was Design → Features → Format → Review → Reveal. The build is About you → Eligibility result → Perks → Design → Review → Wallet.</li>
+<li><strong>Eligibility:</strong> v1.0 put credit scoring, eligibility and APR out of scope. The build includes a simulated questionnaire, soft search result, credit limit and representative APR, all illustrative.</li>
+<li><strong>Features:</strong> v1.0 let users pick any number of feature categories. The build asks for exactly three specific perks, recommends three from the user's goal, and shows their value per year after fees.</li>
+<li><strong>Design options:</strong> v1.0 asked for five colours and optional finishes. The build has seven colours, six patterns, three materials with one-off fees, two finishes and two orientations.</li>
+<li><strong>Surprise me:</strong> moved from the landing page to the design step, and changes the look only (not perks).</li>
+<li><strong>Landing CTA:</strong> "Design your card" became "Start building".</li>
+</ul>
+<h3 id="v10-items-not-built-yet">v1.0 items not built yet</h3>
+<ul>
+<li><strong>Card format choice</strong> (physical, digital-only or both). The final screen assumes both.</li>
+<li><strong>"Edit my card" on the final screen.</strong> Users can edit using Back before applying, but not after.</li>
+<li><strong>"Surprise me" on the landing page</strong>, and AI-generated concepts with a name and description such as "The Weekend Wanderer".</li>
+<li><strong>"Start again" fully resetting the design.</strong> "Build another card" clears answers and perks but keeps the design.</li>
+</ul>
+  </article>
+</div>
+<footer>North is a fictional bank. This is a hackathon prototype and every rate, limit, fee and perk value is illustrative.</footer>
+</body>
+</html>
