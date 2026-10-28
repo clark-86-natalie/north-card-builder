@@ -13,6 +13,10 @@ Built for a work hackathon. North is not a real bank, and every rate, limit, fee
 5. **Review**: a summary with credit limit and representative APR, then apply.
 6. **Card ready**: the card drops into your phone wallet.
 
+## Product requirements
+
+The full PRD lives in [`docs/PRD.md`](docs/PRD.md).
+
 ## Run it
 
 It's a single static file. Open `index.html` in a browser, or serve the folder with any static host such as GitHub Pages.
