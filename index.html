@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>North Card Builder</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: app-first. One phone-width column of steps; on wide screens a sticky "studio" panel shows the live card beside it. */
+:root {
+  --bg: #eef3f6;          /* frost */
+  --surface: #ffffff;
+  --surface-2: #e3ebf0;
+  --ink: #0d1b2e;         /* polar navy */
+  --ink-2: #4a5b70;
+  --line: #cfdbe3;
+  --accent: #0f9e8a;      /* aurora teal */
+  --accent-ink: #ffffff;
+  --accent-soft: #d5f1ec;
+  --studio: #0d1b2e;
+  --studio-ink: #e9f2f6;
+  --studio-ink-2: #93a7bb;
+  --good: #1a8a52;
+  --warn: #b26b00;
+
+  /* card materials: identical in both themes */
+  --c-polar-a: #0f2340; --c-polar-b: #1b3a63;
+  --c-aurora-a: #0c6b6a; --c-aurora-b: #39c9a0;
+  --c-ember-a: #c2453a; --c-ember-b: #f08a5d;
+  --c-frost-a: #dfe7ee; --c-frost-b: #b8c8d6;
+  --c-obsidian-a: #111317; --c-obsidian-b: #2c2f36;
+  --card-light-ink: #f4f8fb;
+  --card-dark-ink: #10233b;
+
+  --f-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", sans-serif;
+  --f-body: "Figtree", "Helvetica Neue", Arial, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  --r: 14px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #08121f; --surface: #102036; --surface-2: #172b45; --ink: #e9f2f6; --ink-2: #93a7bb;
+    --line: #23395a; --accent: #3fd2b4; --accent-ink: #062018; --accent-soft: #123d3f;
+    --studio: #050c16; --studio-ink: #e9f2f6; --studio-ink-2: #8094a9; --good: #4fd08a; --warn: #f0b04a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #08121f; --surface: #102036; --surface-2: #172b45; --ink: #e9f2f6; --ink-2: #93a7bb;
+  --line: #23395a; --accent: #3fd2b4; --accent-ink: #062018; --accent-soft: #123d3f;
+  --studio: #050c16; --studio-ink: #e9f2f6; --studio-ink-2: #8094a9; --good: #4fd08a; --warn: #f0b04a;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; letter-spacing: -0.02em; }
+p { margin: 0; }
+button { font: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.shell { min-height: 100%; display: grid; grid-template-columns: 1fr; }
+@media (min-width: 960px) { .shell { grid-template-columns: minmax(420px, 1fr) minmax(440px, 520px); } }
+
+/* Studio panel (desktop only) */
+.studio { display: none; background: var(--studio); color: var(--studio-ink); position: sticky; top: 0; height: 100vh; padding-block: 40px; padding-left: max(40px, env(safe-area-inset-left, 0px)); padding-right: 40px; flex-direction: column; justify-content: space-between; overflow: hidden; }
+@media (min-width: 960px) { .studio { display: flex; } }
+.studio::before { content: ""; position: absolute; inset: -20% -10% auto auto; width: 520px; height: 520px; border-radius: 50%; background: radial-gradient(circle, color-mix(in srgb, var(--c-aurora-b) 32%, transparent), transparent 65%); pointer-events: none; }
+.studio-top { display: flex; align-items: center; gap: 10px; position: relative; }
+.studio-stage { display: grid; place-items: center; position: relative; flex: 1; }
+.studio-stage .card { width: min(420px, 80%); }
+.studio-stage .card.vertical { width: min(250px, 50%); }
+.studio-foot { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; position: relative; }
+.stat .k { font-size: 11px; text-transform: uppercase; letter-spacing: .1em; color: var(--studio-ink-2); }
+.stat .v { font-family: var(--f-display); font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+/* App column */
+.app { display: flex; flex-direction: column; min-height: 100%; max-width: 520px; width: 100%; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 16px 24px; }
+.topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; }
+.brand { display: flex; align-items: center; gap: 8px; font-family: var(--f-display); font-weight: 800; font-size: 20px; letter-spacing: -0.03em; }
+.brand svg { width: 26px; height: 26px; }
+.back { background: none; border: 0; padding: 8px 4px; color: var(--ink-2); font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+.back[hidden] { display: none; }
+.proto-tag { font-size: 11px; text-transform: uppercase; letter-spacing: .1em; color: var(--ink-2); border: 1px solid var(--line); border-radius: 99px; padding: 3px 9px; }
+
+.progress { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 12px; }
+.progress span { height: 4px; border-radius: 4px; background: var(--line); transition: background .3s; }
+.progress span.on { background: var(--accent); }
+.step-label { margin-top: 8px; font-size: 12px; color: var(--ink-2); font-weight: 600; letter-spacing: .04em; }
+
+.screen { display: none; flex: 1; flex-direction: column; gap: 20px; padding-top: 20px; animation: rise .35s ease both; }
+.screen.active { display: flex; }
+@keyframes rise { from { opacity: .3; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.screen h1 { font-size: clamp(30px, 8vw, 40px); line-height: 1.05; font-weight: 800; }
+.screen h2 { font-size: 26px; line-height: 1.1; font-weight: 700; }
+.lede { color: var(--ink-2); font-size: 16px; max-width: 40ch; }
+
+.mobile-card { display: grid; place-items: center; padding-block: 4px; }
+.mobile-card .card { width: min(340px, 100%); }
+.mobile-card .card.vertical { width: min(190px, 56%); }
+@media (min-width: 960px) { .mobile-card.hide-wide { display: none; } }
+
+/* Buttons */
+.cta-bar { margin-top: auto; padding-top: 16px; display: grid; gap: 10px; position: sticky; bottom: 0; background: linear-gradient(to top, var(--bg) 70%, transparent); padding-bottom: env(safe-area-inset-bottom, 0px); }
+.btn { border: 0; border-radius: 99px; padding: 15px 22px; font-weight: 700; font-size: 16px; background: var(--accent); color: var(--accent-ink); transition: transform .15s, opacity .2s; }
+.btn:active { transform: scale(.98); }
+.btn:disabled { opacity: .4; cursor: not-allowed; }
+.btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+.fine { font-size: 12px; color: var(--ink-2); text-align: center; }
+
+/* Landing */
+.hero-points { display: grid; gap: 12px; }
+.hero-points div { display: grid; grid-template-columns: 28px 1fr; gap: 10px; align-items: start; }
+.hero-points b { display: block; font-weight: 700; }
+.hero-points small { color: var(--ink-2); font-size: 14px; }
+.tick { width: 28px; height: 28px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; font-weight: 800; font-size: 13px; }
+
+/* Goal options */
+.options { display: grid; gap: 10px; }
+.opt { text-align: left; background: var(--surface); border: 1.5px solid var(--line); border-radius: var(--r); padding: 14px 16px; display: grid; grid-template-columns: 40px 1fr auto; gap: 12px; align-items: center; transition: border-color .2s, background .2s; }
+.opt:hover { border-color: color-mix(in srgb, var(--accent) 50%, var(--line)); }
+.opt[aria-pressed="true"] { border-color: var(--accent); background: color-mix(in srgb, var(--accent-soft) 55%, var(--surface)); }
+.opt .ico { width: 40px; height: 40px; border-radius: 12px; background: var(--surface-2); display: grid; place-items: center; color: var(--accent); }
+.opt .ico svg { width: 22px; height: 22px; }
+.opt b { display: block; font-size: 16px; }
+.opt small { color: var(--ink-2); font-size: 13.5px; display: block; }
+.radio { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--line); display: grid; place-items: center; }
+.opt[aria-pressed="true"] .radio { border-color: var(--accent); background: var(--accent); }
+.opt[aria-pressed="true"] .radio::after { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--accent-ink); }
+
+/* Perks */
+.slots { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; }
+.slot-dots { display: flex; gap: 6px; }
+.slot-dots i { width: 30px; height: 30px; border-radius: 50%; border: 2px dashed var(--line); display: grid; place-items: center; font-style: normal; color: var(--accent-ink); font-size: 13px; font-weight: 800; transition: all .25s; }
+.slot-dots i.full { background: var(--accent); border: 2px solid var(--accent); }
+.slots small { color: var(--ink-2); font-size: 13px; }
+.slots b { display: block; font-size: 15px; }
+.perk-group h3 { font-family: var(--f-body); font-size: 12px; text-transform: uppercase; letter-spacing: .1em; color: var(--ink-2); font-weight: 700; margin-bottom: 8px; }
+.perk-list { display: grid; gap: 8px; }
+.perk { text-align: left; background: var(--surface); border: 1.5px solid var(--line); border-radius: var(--r); padding: 12px 14px; display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; align-items: center; transition: border-color .2s, opacity .2s, background .2s; }
+.perk[aria-pressed="true"] { border-color: var(--accent); background: color-mix(in srgb, var(--accent-soft) 55%, var(--surface)); }
+.perk.locked { opacity: .45; }
+.perk b { font-size: 15px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.perk small { grid-column: 1; color: var(--ink-2); font-size: 13px; }
+.perk .tog { grid-row: 1 / span 2; grid-column: 2; width: 26px; height: 26px; border-radius: 8px; border: 2px solid var(--line); display: grid; place-items: center; font-weight: 800; color: var(--accent-ink); }
+.perk[aria-pressed="true"] .tog { background: var(--accent); border-color: var(--accent); }
+.badge { font-family: var(--f-body); font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; padding: 2px 7px; border-radius: 99px; background: var(--accent-soft); color: var(--accent); }
+.badge.fee { background: var(--surface-2); color: var(--ink-2); }
+
+.value-box { background: var(--studio); color: var(--studio-ink); border-radius: 18px; padding: 18px; display: grid; gap: 12px; }
+.value-box .row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.value-box .big { font-family: var(--f-display); font-size: 34px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.03em; }
+.value-box small { color: var(--studio-ink-2); font-size: 13px; }
+.value-box label { font-size: 13px; color: var(--studio-ink-2); display: flex; justify-content: space-between; }
+.value-box label b { color: var(--studio-ink); font-variant-numeric: tabular-nums; }
+input[type="range"] { width: 100%; accent-color: var(--accent); }
+.breakdown { display: grid; gap: 4px; font-size: 13px; border-top: 1px solid color-mix(in srgb, var(--studio-ink) 15%, transparent); padding-top: 10px; }
+.breakdown div { display: flex; justify-content: space-between; gap: 12px; font-variant-numeric: tabular-nums; }
+.breakdown div span:first-child { color: var(--studio-ink-2); }
+
+/* Design controls */
+.field { display: grid; gap: 8px; }
+.field > span { font-size: 12px; text-transform: uppercase; letter-spacing: .1em; color: var(--ink-2); font-weight: 700; }
+.swatches { display: flex; flex-wrap: wrap; gap: 10px; }
+.sw { width: 52px; height: 52px; border-radius: 14px; border: 2px solid transparent; padding: 3px; background: var(--surface); box-shadow: 0 0 0 1px var(--line); }
+.sw i { display: block; width: 100%; height: 100%; border-radius: 10px; }
+.sw[aria-pressed="true"] { border-color: var(--accent); box-shadow: none; }
+.seg { display: flex; flex-wrap: wrap; gap: 6px; }
+.seg button { background: var(--surface); border: 1.5px solid var(--line); border-radius: 99px; padding: 8px 14px; font-weight: 600; font-size: 14px; }
+.seg button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent); color: var(--accent-ink); }
+.text-in { width: 100%; background: var(--surface); border: 1.5px solid var(--line); border-radius: 12px; padding: 13px 14px; font: inherit; color: var(--ink); text-transform: uppercase; letter-spacing: .06em; }
+.text-in:focus { border-color: var(--accent); outline: none; }
+.hint { font-size: 12.5px; color: var(--ink-2); }
+
+/* Check step */
+.summary { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 4px 16px; }
+.summary div { display: flex; justify-content: space-between; gap: 16px; padding: 11px 0; border-bottom: 1px solid var(--line); font-size: 14.5px; }
+.summary div:last-child { border-bottom: 0; }
+.summary span:first-child { color: var(--ink-2); }
+.summary span:last-child { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
+.result { border-radius: var(--r); padding: 16px; display: grid; gap: 6px; background: color-mix(in srgb, var(--good) 12%, var(--surface)); border: 1px solid color-mix(in srgb, var(--good) 40%, var(--line)); }
+.result .pill { justify-self: start; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; color: var(--good); }
+.result b { font-family: var(--f-display); font-size: 22px; }
+.result small { color: var(--ink-2); font-size: 13px; }
+.scanning { display: flex; gap: 12px; align-items: center; padding: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); font-weight: 600; }
+.spinner { width: 22px; height: 22px; border-radius: 50%; border: 3px solid var(--line); border-top-color: var(--accent); animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Done */
+.wallet { position: relative; height: 270px; display: grid; place-items: end center; }
+.wallet .pocket { position: relative; z-index: 2; width: min(320px, 92%); height: 110px; border-radius: 22px; background: var(--ink); color: var(--bg); display: flex; align-items: flex-end; justify-content: space-between; padding: 16px 18px; font-weight: 700; }
+.wallet .pocket small { font-weight: 500; opacity: .7; font-size: 12px; }
+.wallet .card { position: absolute; z-index: 1; width: min(290px, 82%); bottom: 50px; animation: drop 1.3s cubic-bezier(.3,1.25,.5,1) .2s both; }
+.wallet .card.vertical { width: min(150px, 42%); }
+@keyframes drop { from { transform: translateY(-140px) rotate(-8deg); opacity: 0; } 60% { opacity: 1; } to { transform: translateY(0) rotate(0); opacity: 1; } }
+.next-list { display: grid; gap: 10px; }
+.next-list div { display: grid; grid-template-columns: 28px 1fr; gap: 10px; }
+
+/* ---------- The card ---------- */
+.card { position: relative; aspect-ratio: 1.586; max-width: 100%; border-radius: 16px; overflow: hidden; color: var(--card-light-ink); box-shadow: 0 24px 48px -18px rgba(5, 12, 22, .55), 0 2px 6px rgba(5, 12, 22, .2); transition: background .4s, transform .4s; container-type: inline-size; }
+.card.vertical { aspect-ratio: 1 / 1.586; }
+.card[data-color="polar"] { background: linear-gradient(135deg, var(--c-polar-a), var(--c-polar-b)); }
+.card[data-color="aurora"] { background: linear-gradient(135deg, var(--c-aurora-a), var(--c-aurora-b)); }
+.card[data-color="ember"] { background: linear-gradient(135deg, var(--c-ember-a), var(--c-ember-b)); }
+.card[data-color="frost"] { background: linear-gradient(135deg, var(--c-frost-a), var(--c-frost-b)); color: var(--card-dark-ink); }
+.card[data-color="obsidian"] { background: linear-gradient(135deg, var(--c-obsidian-a), var(--c-obsidian-b)); }
+.card .pat { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .22; }
+.card .sheen { position: absolute; inset: 0; pointer-events: none; }
+.card[data-finish="gloss"] .sheen { background: linear-gradient(115deg, transparent 30%, rgba(255,255,255,.28) 45%, transparent 60%); }
+.card[data-finish="metal"] .sheen { background: repeating-linear-gradient(90deg, rgba(255,255,255,.05) 0 1px, transparent 1px 3px), linear-gradient(120deg, rgba(255,255,255,.18), transparent 40%, rgba(255,255,255,.12) 70%, transparent); }
+.card[data-finish="matte"] .sheen { background: radial-gradient(circle at 30% 20%, rgba(255,255,255,.08), transparent 60%); }
+.card .inner { position: absolute; inset: 0; padding: 7cqw; display: flex; flex-direction: column; justify-content: space-between; }
+.card .row1 { display: flex; justify-content: space-between; align-items: flex-start; }
+.card .mark { display: flex; align-items: center; gap: 2cqw; font-family: var(--f-display); font-weight: 800; font-size: 6.5cqw; letter-spacing: -0.03em; }
+.card .mark svg { width: 7.5cqw; height: 7.5cqw; }
+.card .tier { font-size: 3.2cqw; text-transform: uppercase; letter-spacing: .14em; font-weight: 700; opacity: .85; }
+.card .chip { width: 12cqw; height: 9cqw; border-radius: 1.8cqw; background: linear-gradient(135deg, #e8cf8a, #b8934a); position: relative; }
+.card .chip::after { content: ""; position: absolute; inset: 22% 30%; border: 1px solid rgba(0,0,0,.25); border-radius: 1cqw; }
+.card .mid { display: flex; align-items: center; gap: 4cqw; }
+.card .cl svg { width: 6cqw; height: 6cqw; opacity: .85; }
+.card .row3 { display: flex; justify-content: space-between; align-items: flex-end; gap: 4cqw; }
+.card .holder { font-family: var(--f-mono); font-size: 4cqw; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.card .num { font-family: var(--f-mono); font-size: 4cqw; opacity: .85; white-space: nowrap; }
+.card .net { font-weight: 800; font-size: 4.2cqw; font-style: italic; letter-spacing: -0.02em; opacity: .95; }
+.card.vertical .inner { padding: 10cqw; }
+.card.vertical .mark { font-size: 11cqw; gap: 3cqw; }
+.card.vertical .mark svg { width: 12cqw; height: 12cqw; }
+.card.vertical .tier { font-size: 5cqw; }
+.card.vertical .chip { width: 20cqw; height: 15cqw; }
+.card.vertical .cl svg { width: 10cqw; height: 10cqw; }
+.card.vertical .row1 { flex-direction: column; gap: 3cqw; }
+.card.vertical .row3 { flex-direction: column; align-items: flex-start; gap: 3cqw; }
+.card.vertical .holder, .card.vertical .num { font-size: 6.5cqw; }
+.card.vertical .net { font-size: 7cqw; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <aside class="studio" aria-label="Live card preview">
+    <div class="studio-top">
+      <span class="brand" style="color: var(--studio-ink)"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="14" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 5 L20 16 L16 14 L12 16 Z" fill="var(--c-aurora-b)"/><path d="M16 27 L12 16 L16 18 L20 16 Z" fill="currentColor" opacity=".45"/></svg>North</span>
+      <span style="margin-left:auto; font-size:12px; color: var(--studio-ink-2); letter-spacing:.08em; text-transform:uppercase">Your card, live</span>
+    </div>
+    <div class="studio-stage" id="studioStage"></div>
+    <div class="studio-foot">
+      <div class="stat"><div class="k">Perks</div><div class="v" id="sPerks">0 / 3</div></div>
+      <div class="stat"><div class="k">Est. value / yr</div><div class="v" id="sValue">£0</div></div>
+      <div class="stat"><div class="k">Monthly fee</div><div class="v" id="sFee">£0</div></div>
+    </div>
+  </aside>
+
+  <main class="app">
+    <div class="topbar">
+      <button class="back" id="backBtn" hidden aria-label="Go back">← Back</button>
+      <span class="brand" id="topBrand"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="14" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 5 L20 16 L16 14 L12 16 Z" fill="var(--accent)"/><path d="M16 27 L12 16 L16 18 L20 16 Z" fill="currentColor" opacity=".45"/></svg>North</span>
+      <span class="proto-tag">Prototype</span>
+    </div>
+    <div id="progressWrap" hidden>
+      <div class="progress" id="progress"><span></span><span></span><span></span><span></span></div>
+      <div class="step-label" id="stepLabel"></div>
+    </div>
+
+    <!-- 0 Landing -->
+    <section class="screen active" data-screen="0">
+      <h1>Find your north. Then build the card around it.</h1>
+      <p class="lede">Pick the perks you'll actually use, design how it looks, and check your eligibility in about two minutes. Checking won't affect your credit score.</p>
+      <div class="mobile-card hide-wide" data-preview></div>
+      <div class="hero-points">
+        <div><span class="tick">3</span><span><b>Choose 3 perks</b><small>Cashback, travel, 0% offers or credit building. Swap them every 90 days in the app.</small></span></div>
+        <div><span class="tick">✓</span><span><b>Design it yourself</b><small>Colour, pattern, finish and how your name appears.</small></span></div>
+        <div><span class="tick">£0</span><span><b>No annual fee</b><small>Only premium travel perks carry a small monthly fee, shown upfront.</small></span></div>
+      </div>
+      <div class="cta-bar">
+        <button class="btn" data-go="1">Start building</button>
+        <p class="fine">North is a fictional bank. This is a hackathon prototype.</p>
+      </div>
+    </section>
+
+    <!-- 1 Goal -->
+    <section class="screen" data-screen="1">
+      <h2>What do you want your card to do for you?</h2>
+      <p class="lede">We'll recommend perks to match. You can still pick anything.</p>
+      <div class="options" id="goalOpts"></div>
+      <div class="cta-bar"><button class="btn" id="goalNext" data-go="2" disabled>Continue</button></div>
+    </section>
+
+    <!-- 2 Perks -->
+    <section class="screen" data-screen="2">
+      <h2>Pick your three perks</h2>
+      <div class="slots">
+        <span><b id="slotTitle">3 slots left</b><small>Swap perks every 90 days in the app</small></span>
+        <span class="slot-dots" id="slotDots"><i></i><i></i><i></i></span>
+      </div>
+      <div class="value-box" aria-live="polite">
+        <label for="spend">Your monthly card spend <b id="spendOut">£1,200</b></label>
+        <input type="range" id="spend" min="200" max="5000" step="100" value="1200">
+        <div class="row"><span><small>Estimated value per year</small><div class="big" id="valueOut">£0</div></span><small id="feeOut">No fees</small></div>
+        <div class="breakdown" id="breakdown"><div><span>Pick a perk to see what it's worth</span><span></span></div></div>
+      </div>
+      <div id="perkGroups" style="display:grid; gap:18px"></div>
+      <div class="cta-bar"><button class="btn" id="perksNext" data-go="3" disabled>Pick 3 perks</button></div>
+    </section>
+
+    <!-- 3 Design -->
+    <section class="screen" data-screen="3">
+      <h2>Make it yours</h2>
+      <div class="mobile-card hide-wide" data-preview></div>
+      <div class="field"><span>Colour</span><div class="swatches" id="colorOpts"></div></div>
+      <div class="field"><span>Pattern</span><div class="seg" id="patternOpts"></div></div>
+      <div class="field"><span>Finish</span><div class="seg" id="finishOpts"></div></div>
+      <div class="field"><span>Orientation</span><div class="seg" id="orientOpts"></div></div>
+      <div class="field">
+        <span><label for="holderName">Name on card</label></span>
+        <input class="text-in" id="holderName" maxlength="24" value="Alex Morgan" autocomplete="off">
+        <p class="hint">Use the name on your ID, or a nickname for the front. Up to 24 characters.</p>
+      </div>
+      <div class="cta-bar"><button class="btn" data-go="4">Looks good</button></div>
+    </section>
+
+    <!-- 4 Check -->
+    <section class="screen" data-screen="4">
+      <h2>Check your eligibility</h2>
+      <p class="lede">A soft search only. It won't show on your credit file to other lenders.</p>
+      <div class="field">
+        <span><label for="income">Annual income before tax</label></span>
+        <div class="value-box" style="background: var(--surface); color: var(--ink); border: 1px solid var(--line)">
+          <div class="row"><div class="big" id="incomeOut" style="font-size:28px">£32,000</div></div>
+          <input type="range" id="income" min="8000" max="150000" step="1000" value="32000">
+        </div>
+      </div>
+      <div class="field"><span>Employment</span><div class="seg" id="empOpts"></div></div>
+      <div class="summary" id="summary"></div>
+      <div id="checkResult"></div>
+      <div class="cta-bar">
+        <button class="btn" id="checkBtn">Check eligibility</button>
+        <p class="fine">Figures are illustrative. Representative example shown before you apply.</p>
+      </div>
+    </section>
+
+    <!-- 5 Done -->
+    <section class="screen" data-screen="5">
+      <h2>Your North card is ready</h2>
+      <div class="wallet" id="wallet"></div>
+      <div class="summary" id="doneSummary"></div>
+      <div class="next-list">
+        <div><span class="tick">1</span><span>Use it now. Your card is in your phone wallet and the North app.</span></div>
+        <div><span class="tick">2</span><span>Your physical card arrives in 3 to 5 working days.</span></div>
+        <div><span class="tick">3</span><span>Swap a perk any time after 90 days from the Card tab.</span></div>
+      </div>
+      <div class="cta-bar"><button class="btn ghost" id="restart">Build another card</button></div>
+    </section>
+  </main>
+</div>
+
+<script>
+const ICONS = {
+  build: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V14M10 20V9M16 20V12M22 20V4"/></svg>',
+  everyday: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18l-2 12H5z"/><path d="M8 6a4 4 0 0 1 8 0"/></svg>',
+  travel: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 16l20-6-3-3-7 2-5-5-2 1 3 6-4 1-2-2-1 1z"/><path d="M3 21h18"/></svg>',
+  spread: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>'
+};
+const GOALS = [
+  { id: 'build', title: 'Build my credit score', sub: 'My first card, or a fresh start', rec: ['builder', 'roundup', 'cashback1'] },
+  { id: 'everyday', title: 'Get money back on everyday spending', sub: 'Groceries, bills, the usual', rec: ['cashback1', 'grocery3', 'roundup'] },
+  { id: 'travel', title: 'Earn travel rewards', sub: 'Miles, lounges, spending abroad', rec: ['miles', 'nofx', 'lounge'] },
+  { id: 'spread', title: 'Spread the cost of something', sub: 'A big purchase or moving a balance', rec: ['purchase0', 'bt0', 'builder'] }
+];
+// value(spend) returns estimated £ per year
+const PERKS = [
+  { id: 'cashback1', group: 'Cashback', name: '1% cashback on everything', sub: 'Paid into your account every month', value: s => s * 12 * 0.01 },
+  { id: 'grocery3', group: 'Cashback', name: '3% back at supermarkets', sub: 'Based on about a quarter of your spend', value: s => s * 12 * 0.25 * 0.03 },
+  { id: 'roundup', group: 'Cashback', name: 'Round-ups to savings', sub: 'Spare change moves to a 4.1% AER pot', value: () => 0, label: 'Builds savings' },
+  { id: 'miles', group: 'Travel', name: 'North Miles', sub: '1 mile per £1, 3 per £1 on flights and hotels', value: s => s * 12 * (0.9 + 0.1 * 3) * 0.01 },
+  { id: 'nofx', group: 'Travel', name: 'No foreign transaction fees', sub: 'Saves 2.99% on spending abroad', value: s => s * 12 * 0.08 * 0.0299 },
+  { id: 'lounge', group: 'Travel', name: '4 airport lounge passes a year', sub: 'Over 1,300 lounges worldwide', value: () => 4 * 32, fee: 4 },
+  { id: 'insurance', group: 'Travel', name: 'Worldwide travel insurance', sub: 'Includes winter sports and gadgets', value: () => 95, fee: 3 },
+  { id: 'purchase0', group: 'Spread the cost', name: '0% on purchases for 12 months', sub: 'Then the standard rate applies', value: () => 0, label: '0% for 12 mo' },
+  { id: 'bt0', group: 'Spread the cost', name: '0% on balance transfers for 18 months', sub: '3% transfer fee', value: () => 0, label: '0% for 18 mo' },
+  { id: 'builder', group: 'Credit building', name: 'Credit Builder', sub: 'Monthly score updates and a limit review every 6 months', value: () => 0, label: 'Included' }
+];
+const COLORS = [
+  { id: 'polar', name: 'Polar Night' }, { id: 'aurora', name: 'Aurora' }, { id: 'ember', name: 'Ember' },
+  { id: 'frost', name: 'Frost' }, { id: 'obsidian', name: 'Obsidian' }
+];
+const PATTERNS = [{ id: 'none', name: 'Clean' }, { id: 'compass', name: 'Compass' }, { id: 'contour', name: 'Contours' }, { id: 'stars', name: 'Stars' }];
+const FINISHES = [{ id: 'matte', name: 'Matte' }, { id: 'gloss', name: 'Gloss' }, { id: 'metal', name: 'Brushed metal' }];
+const ORIENT = [{ id: 'h', name: 'Landscape' }, { id: 'v', name: 'Portrait' }];
+const EMP = [{ id: 'employed', name: 'Employed' }, { id: 'self', name: 'Self-employed' }, { id: 'student', name: 'Student' }, { id: 'retired', name: 'Retired' }];
+
+const state = { step: 0, goal: null, perks: [], spend: 1200, color: 'aurora', pattern: 'compass', finish: 'matte', orient: 'h', name: 'Alex Morgan', income: 32000, emp: 'employed', checked: false };
+
+const $ = s => document.querySelector(s);
+const gbp = n => '£' + Math.round(n).toLocaleString('en-GB');
+
+const PATTERN_SVG = {
+  none: '',
+  compass: '<svg class="pat" viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice"><g fill="none" stroke="currentColor" stroke-width=".6"><circle cx="128" cy="78" r="18"/><circle cx="128" cy="78" r="34"/><circle cx="128" cy="78" r="52"/><circle cx="128" cy="78" r="72"/><path d="M128 0V160M48 78H210M72 22L184 134M184 22L72 134"/></g></svg>',
+  contour: '<svg class="pat" viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice"><g fill="none" stroke="currentColor" stroke-width=".7">' +
+    Array.from({ length: 9 }, (_, i) => `<path d="M-10 ${20 + i * 10} C 30 ${5 + i * 10}, 60 ${40 + i * 9}, 100 ${18 + i * 10} S 150 ${30 + i * 9}, 175 ${12 + i * 10}"/>`).join('') + '</g></svg>',
+  stars: '<svg class="pat" viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice"><g fill="currentColor">' +
+    [[20,14,1],[44,30,.7],[70,10,1.2],[96,24,.6],[120,12,.9],[142,30,1.4],[30,52,.6],[60,64,1],[88,48,.8],[112,66,.6],[136,56,1],[150,80,.7],[18,84,.9],[78,88,.6],[104,92,1.1]]
+      .map(([x,y,r]) => `<circle cx="${x}" cy="${y}" r="${r}"/>`).join('') +
+    '</g><path d="M70 10 L96 24 L120 12 L142 30" fill="none" stroke="currentColor" stroke-width=".4"/></svg>'
+};
+
+function tierName() {
+  const p = state.perks;
+  if (p.includes('lounge') || p.includes('insurance')) return 'Explorer';
+  if (p.includes('builder')) return 'Foundation';
+  if (p.includes('miles') || p.includes('nofx')) return 'Voyager';
+  if (p.includes('purchase0') || p.includes('bt0')) return 'Flex';
+  return 'Everyday';
+}
+
+function cardHTML() {
+  const name = (state.name.trim() || 'Your name').toUpperCase();
+  return `<div class="card ${state.orient === 'v' ? 'vertical' : ''}" data-color="${state.color}" data-finish="${state.finish}" role="img" aria-label="North ${tierName()} card, ${COLORS.find(c => c.id === state.color).name}, ${state.finish} finish">
+    ${PATTERN_SVG[state.pattern]}<div class="sheen"></div>
+    <div class="inner">
+      <div class="row1">
+        <span class="mark"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="14" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M16 5 L20 16 L16 14 L12 16 Z" fill="currentColor"/><path d="M16 27 L12 16 L16 18 L20 16 Z" fill="currentColor" opacity=".45"/></svg>North</span>
+        <span class="tier">${tierName()}</span>
+      </div>
+      <div class="mid"><span class="chip"></span><span class="cl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 7a7 7 0 0 1 0 10M12 4a11 11 0 0 1 0 16M4 10a3 3 0 0 1 0 4"/></svg></span></div>
+      <div class="row3"><div style="min-width:0; display:grid; gap:1cqw"><span class="num">•••• 4821</span><span class="holder">${escapeHTML(name)}</span></div><span class="net">VISA</span></div>
+    </div>
+  </div>`;
+}
+function escapeHTML(s) { return s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]); }
+
+function totals() {
+  const sel = PERKS.filter(p => state.perks.includes(p.id));
+  const fee = sel.reduce((a, p) => a + (p.fee || 0), 0);
+  const value = sel.reduce((a, p) => a + p.value(state.spend), 0);
+  return { sel, fee, value, net: value - fee * 12 };
+}
+
+function renderPreviews() {
+  document.querySelectorAll('[data-preview]').forEach(el => el.innerHTML = cardHTML());
+  $('#studioStage').innerHTML = cardHTML();
+  const t = totals();
+  $('#sPerks').textContent = `${state.perks.length} / 3`;
+  $('#sValue').textContent = gbp(Math.max(t.net, 0));
+  $('#sFee').textContent = gbp(t.fee);
+}
+
+function segment(el, items, key, after) {
+  el.innerHTML = items.map(i => `<button type="button" data-v="${i.id}" aria-pressed="${state[key] === i.id}">${i.name}</button>`).join('');
+  el.onclick = e => {
+    const b = e.target.closest('button'); if (!b) return;
+    state[key] = b.dataset.v;
+    el.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b));
+    renderPreviews(); after && after();
+  };
+}
+
+function renderGoals() {
+  $('#goalOpts').innerHTML = GOALS.map(g => `<button type="button" class="opt" data-v="${g.id}" aria-pressed="${state.goal === g.id}">
+    <span class="ico">${ICONS[g.id]}</span><span><b>${g.title}</b><small>${g.sub}</small></span><span class="radio"></span></button>`).join('');
+  $('#goalOpts').onclick = e => {
+    const b = e.target.closest('.opt'); if (!b) return;
+    const changed = state.goal !== b.dataset.v;
+    state.goal = b.dataset.v;
+    if (changed) state.perks = [...GOALS.find(g => g.id === state.goal).rec];
+    renderGoals(); renderPerks(); renderPreviews();
+    $('#goalNext').disabled = false;
+  };
+}
+
+function renderPerks() {
+  const rec = state.goal ? GOALS.find(g => g.id === state.goal).rec : [];
+  const groups = [...new Set(PERKS.map(p => p.group))];
+  const full = state.perks.length >= 3;
+  $('#perkGroups').innerHTML = groups.map(g => `<div class="perk-group"><h3>${g}</h3><div class="perk-list">` +
+    PERKS.filter(p => p.group === g).map(p => {
+      const on = state.perks.includes(p.id);
+      return `<button type="button" class="perk ${!on && full ? 'locked' : ''}" data-v="${p.id}" aria-pressed="${on}">
+        <b>${p.name}${rec.includes(p.id) ? '<span class="badge">For you</span>' : ''}${p.fee ? `<span class="badge fee">£${p.fee}/mo</span>` : ''}</b>
+        <small>${p.sub}</small><span class="tog">${on ? '✓' : ''}</span></button>`;
+    }).join('') + '</div></div>').join('');
+
+  const n = state.perks.length;
+  $('#slotDots').innerHTML = [0, 1, 2].map(i => `<i class="${i < n ? 'full' : ''}">${i < n ? '✓' : ''}</i>`).join('');
+  $('#slotTitle').textContent = n === 3 ? 'All slots filled' : `${3 - n} slot${3 - n === 1 ? '' : 's'} left`;
+  $('#perksNext').disabled = n !== 3;
+  $('#perksNext').textContent = n === 3 ? 'Design my card' : `Pick ${3 - n} more`;
+  renderValue();
+}
+
+function renderValue() {
+  const t = totals();
+  $('#spendOut').textContent = gbp(state.spend);
+  $('#valueOut').textContent = gbp(Math.max(t.net, 0));
+  $('#feeOut').textContent = t.fee ? `After ${gbp(t.fee)}/mo in fees` : 'No fees';
+  $('#breakdown').innerHTML = t.sel.length ? t.sel.map(p => {
+    const v = p.value(state.spend);
+    const right = p.label ? p.label : (p.fee ? `${gbp(v)} − ${gbp(p.fee * 12)} fee` : gbp(v));
+    return `<div><span>${p.name}</span><span>${right}</span></div>`;
+  }).join('') : '<div><span>Pick a perk to see what it\'s worth</span><span></span></div>';
+}
+
+$('#perkGroups').addEventListener('click', e => {
+  const b = e.target.closest('.perk'); if (!b) return;
+  const id = b.dataset.v;
+  if (state.perks.includes(id)) state.perks = state.perks.filter(x => x !== id);
+  else if (state.perks.length < 3) state.perks.push(id);
+  else { b.animate([{ transform: 'translateX(0)' }, { transform: 'translateX(-5px)' }, { transform: 'translateX(5px)' }, { transform: 'translateX(0)' }], { duration: 250 }); return; }
+  renderPerks(); renderPreviews();
+});
+$('#spend').addEventListener('input', e => { state.spend = +e.target.value; renderValue(); renderPreviews(); });
+
+function renderDesign() {
+  $('#colorOpts').innerHTML = COLORS.map(c => `<button type="button" class="sw" data-v="${c.id}" aria-label="${c.name}" title="${c.name}" aria-pressed="${state.color === c.id}"><i style="background: linear-gradient(135deg, var(--c-${c.id}-a), var(--c-${c.id}-b))"></i></button>`).join('');
+  $('#colorOpts').onclick = e => {
+    const b = e.target.closest('.sw'); if (!b) return;
+    state.color = b.dataset.v; renderDesign(); renderPreviews();
+  };
+  segment($('#patternOpts'), PATTERNS, 'pattern');
+  segment($('#finishOpts'), FINISHES, 'finish');
+  segment($('#orientOpts'), ORIENT, 'orient');
+}
+$('#holderName').addEventListener('input', e => { state.name = e.target.value; renderPreviews(); });
+
+function offer() {
+  const base = { employed: 0.22, self: 0.18, student: 0.08, retired: 0.15 }[state.emp];
+  let limit = Math.round(Math.min(state.income * base, 15000) / 50) * 50;
+  if (state.goal === 'build') limit = Math.min(limit, 1200);
+  limit = Math.max(limit, 250);
+  const apr = state.goal === 'build' || state.emp === 'student' ? 29.9 : 24.9;
+  return { limit, apr };
+}
+function summaryRows() {
+  const t = totals(); const o = offer();
+  return [
+    ['Card', `North ${tierName()}`],
+    ['Perks', t.sel.map(p => p.name).join(', ')],
+    ['Design', `${COLORS.find(c => c.id === state.color).name}, ${PATTERNS.find(p => p.id === state.pattern).name.toLowerCase()}, ${state.finish === 'metal' ? 'brushed metal' : state.finish}`],
+    ['Monthly fee', t.fee ? gbp(t.fee) : '£0'],
+    ['Representative APR', `${o.apr}% (variable)`]
+  ].map(([k, v]) => `<div><span>${k}</span><span>${v}</span></div>`).join('');
+}
+function renderCheck() {
+  $('#incomeOut').textContent = gbp(state.income);
+  $('#summary').innerHTML = summaryRows();
+  segment($('#empOpts'), EMP, 'emp', resetCheck);
+}
+function resetCheck() {
+  state.checked = false; $('#checkResult').innerHTML = '';
+  $('#checkBtn').textContent = 'Check eligibility'; $('#checkBtn').disabled = false;
+  $('#summary').innerHTML = summaryRows();
+}
+$('#income').addEventListener('input', e => { state.income = +e.target.value; $('#incomeOut').textContent = gbp(state.income); resetCheck(); });
+$('#checkBtn').addEventListener('click', () => {
+  if (state.checked) return go(5);
+  const btn = $('#checkBtn'); btn.disabled = true;
+  $('#checkResult').innerHTML = '<div class="scanning"><span class="spinner"></span>Running a soft search…</div>';
+  setTimeout(() => {
+    const o = offer();
+    $('#checkResult').innerHTML = `<div class="result"><span class="pill">Likely to be approved</span><b>Credit limit up to ${gbp(o.limit)}</b><small>${o.apr}% APR representative (variable). Based on a limit of £1,200 and spending it all, you'd pay ${gbp(1200 * o.apr / 100 / 12)} interest in your first month if you didn't pay it off.</small></div>`;
+    state.checked = true; btn.disabled = false; btn.textContent = 'Apply and get my card';
+  }, 1400);
+});
+
+function renderDone() {
+  const o = offer(); const t = totals();
+  $('#wallet').innerHTML = cardHTML() + '<div class="pocket"><span>Wallet<br><small>Ready for contactless</small></span><span>✓</span></div>';
+  $('#doneSummary').innerHTML = [
+    ['Card', `North ${tierName()} •••• 4821`], ['Credit limit', gbp(o.limit)], ['Estimated value / yr', gbp(Math.max(t.net, 0))]
+  ].map(([k, v]) => `<div><span>${k}</span><span>${v}</span></div>`).join('');
+}
+
+const LABELS = ['', 'Step 1 of 4 · Your goal', 'Step 2 of 4 · Perks', 'Step 3 of 4 · Design', 'Step 4 of 4 · Eligibility'];
+function go(n) {
+  state.step = n;
+  document.querySelectorAll('.screen').forEach(s => s.classList.toggle('active', +s.dataset.screen === n));
+  const inFlow = n >= 1 && n <= 4;
+  $('#progressWrap').hidden = !inFlow;
+  $('#backBtn').hidden = !inFlow;
+  $('#topBrand').hidden = inFlow;
+  if (inFlow) {
+    $('#stepLabel').textContent = LABELS[n];
+    document.querySelectorAll('#progress span').forEach((s, i) => s.classList.toggle('on', i < n));
+  }
+  if (n === 4) renderCheck();
+  if (n === 5) renderDone();
+  renderPreviews();
+  window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+}
+document.addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (b && !b.disabled) go(+b.dataset.go); });
+$('#backBtn').addEventListener('click', () => go(Math.max(0, state.step - 1)));
+$('#restart').addEventListener('click', () => {
+  Object.assign(state, { goal: null, perks: [], checked: false });
+  $('#goalNext').disabled = true; renderGoals(); renderPerks(); resetCheck(); go(0);
+});
+
+renderGoals(); renderPerks(); renderDesign(); renderPreviews();
+</script>
+</body>
+</html>
