@@ -152,6 +152,13 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .badge { font-family: var(--f-body); font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; padding: 2px 7px; border-radius: 99px; background: var(--accent-soft); color: var(--accent); }
 .badge.fee { background: var(--surface-2); color: var(--ink-2); }
 
+.spend-box { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; display: grid; gap: 8px; }
+.spend-box label { font-weight: 600; font-size: 15px; }
+.spend-row { display: flex; align-items: center; gap: 14px; }
+.spend-row output { font-family: var(--f-display); font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; min-width: 5.5ch; text-align: right; }
+.spend-scale { display: flex; justify-content: space-between; font-size: 12px; color: var(--ink-2); padding-right: calc(5.5ch + 14px); }
+.value-box .eyebrow { font-size: 11.5px; text-transform: uppercase; letter-spacing: .1em; font-weight: 700; color: var(--studio-ink-2); }
+.value-box .per { font-family: var(--f-body); font-size: 16px; font-weight: 600; letter-spacing: 0; color: var(--studio-ink-2); }
 .value-box { background: var(--studio); color: var(--studio-ink); border-radius: 18px; padding: 18px; display: grid; gap: 12px; }
 .value-box .row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
 .value-box .big { font-family: var(--f-display); font-size: 34px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.03em; }
@@ -301,10 +308,15 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
         <span><b id="slotTitle">3 slots left</b><small>Swap perks every 90 days in the app</small></span>
         <span class="slot-dots" id="slotDots"><i></i><i></i><i></i></span>
       </div>
+      <div class="spend-box">
+        <label for="spend">How much do you put on a card each month?</label>
+        <div class="spend-row"><input type="range" id="spend" min="200" max="5000" step="100" value="1200"><output id="spendOut" for="spend">£1,200</output></div>
+        <div class="spend-scale"><span>£200</span><span>£5,000</span></div>
+      </div>
       <div class="value-box" aria-live="polite">
-        <label for="spend">Your monthly card spend <b id="spendOut">£1,200</b></label>
-        <input type="range" id="spend" min="200" max="5000" step="100" value="1200">
-        <div class="row"><span><small>Estimated value per year</small><div class="big" id="valueOut">£0</div></span><small id="feeOut">No fees</small></div>
+        <span class="eyebrow">What your perks could earn you</span>
+        <div class="big"><span id="valueOut">£0</span><span class="per"> a year</span></div>
+        <small id="valueNote">Based on spending £1,200 a month. No monthly fees.</small>
         <div class="breakdown" id="breakdown"><div><span>Pick a perk to see what it's worth</span><span></span></div></div>
       </div>
       <div id="perkGroups" style="display:grid; gap:18px"></div>
@@ -501,10 +513,10 @@ function renderValue() {
   const t = totals();
   $('#spendOut').textContent = gbp(state.spend);
   $('#valueOut').textContent = gbp(Math.max(t.net, 0));
-  $('#feeOut').textContent = t.fee ? `After ${gbp(t.fee)}/mo in fees` : 'No fees';
+  $('#valueNote').textContent = `Based on spending ${gbp(state.spend)} a month. ` + (t.fee ? `Takes off ${gbp(t.fee)} a month in fees.` : 'No monthly fees.');
   $('#breakdown').innerHTML = t.sel.length ? t.sel.map(p => {
     const v = p.value(state.spend);
-    const right = p.label ? p.label : (p.fee ? `${gbp(v)} − ${gbp(p.fee * 12)} fee` : gbp(v));
+    const right = p.label ? p.label : (p.fee ? `${gbp(v)} − ${gbp(p.fee * 12)} fee` : `${gbp(v)} a year`);
     return `<div><span>${p.name}</span><span>${right}</span></div>`;
   }).join('') : '<div><span>Pick a perk to see what it\'s worth</span><span></span></div>';
 }
